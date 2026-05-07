@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="texticons">#136075</color>
+    <color name="osnfongolyb">#86D4E0</color>
+    <color name="knopki">#86D4E0</color>
+    <color name="startigri">#51FF00</color>
+    <color name="filprogressbar">#F9EDA1</color>
+    <color name="fonzakryglen">#DFF9FF</color>
+    <color name="vidilenievsego">#FFAE00</color>
+</resources>
