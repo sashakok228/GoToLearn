@@ -1,0 +1,251 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fonzakryglen">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/fonzakryglen"
+        android:id="@+id/header"
+        android:paddingBottom="30dp"
+        tools:ignore="MissingConstraints">
+
+        <!-- Волна (фон), которая уходит вниз -->
+        <View
+            android:id="@+id/headerCurve"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@drawable/header_wave"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Аватар пользователя (слева) -->
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Приветствие (справа от аватара) -->
+        <TextView
+            android:id="@+id/tvGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:paddingBottom="30dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="Hi, Alex!"
+            android:textColor="@color/texticons"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@id/ivAvatar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="0dp"
+        android:textSize="24dp"
+        android:background="@drawable/rounded_input"
+        android:drawableStart="@drawable/ic_profile"
+        android:drawablePadding="10dp"
+        android:hint="Alex"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        android:fontFamily="@font/ubuntu_regular"/>
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="20dp"
+        android:textSize="24dp"
+        android:background="@drawable/rounded_input"
+        android:drawableStart="@drawable/ic_email"
+        android:drawablePadding="10dp"
+        android:hint="Email adress"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etName"
+        android:fontFamily="@font/ubuntu_regular"/>
+
+    <Button
+        android:id="@+id/btnChangeDannie"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="20dp"
+        android:textSize="24sp"
+        android:backgroundTint="@color/knopki"
+        android:text="Сменить данные"
+        android:textAllCaps="false"
+        android:textColor="@color/texticons"
+        app:cornerRadius="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        android:fontFamily="@font/ubuntu_regular"/>
+
+    <TextView
+        android:id="@+id/tvSecurity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="36dp"
+        android:text="Security"
+        android:textColor="@color/texticons"
+        android:textSize="30sp"
+        android:fontFamily="@font/ubuntu_regular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnChangeDannie"
+        />
+
+    <TextView
+        android:id="@+id/tvGuide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:text="Чтобы изменить пароль, введите свой старый пароль"
+        android:textColor="@color/texticons"
+        android:textSize="20sp"
+        android:fontFamily="@font/ubuntu_regular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSecurity"
+        />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="20dp"
+        android:textSize="24dp"
+        android:background="@drawable/rounded_input"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="10dp"
+        android:hint="Password"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGuide"
+        android:fontFamily="@font/ubuntu_regular"/>
+
+    <Button
+        android:id="@+id/btnChangePassword"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="20dp"
+        android:textSize="24sp"
+        android:backgroundTint="@color/knopki"
+        android:text="Сменить пароль"
+        android:textAllCaps="false"
+        android:textColor="@color/texticons"
+        app:cornerRadius="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etPassword"
+        android:fontFamily="@font/ubuntu_regular"/>
+
+
+    <!-- Нижняя навигация -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/bottom_nav_bg"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Кнопка: HOME -->
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/navProfile">
+
+
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/texticons" />
+        </LinearLayout>
+
+        <!-- Кнопка: PROFILE (Аватар с книгой) -->
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toEndOf="@+id/navHome"
+            app:layout_constraintEnd_toStartOf="@+id/navLibrary">
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="5dp"
+                android:background="@drawable/nav_indicator"
+                android:layout_marginBottom="7dp" />
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_avaterbook" /> <!-- Используй иконку с человечком и книгой -->
+        </LinearLayout>
+
+        <!-- Кнопка: LIBRARY (Книга) -->
+        <LinearLayout
+            android:id="@+id/navLibrary"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toEndOf="@+id/navProfile"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_book"
+                app:tint="@color/texticons" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,6 +24,7 @@
         <activity android:name=".SignIn_activity" />
         <activity android:name=".ForgotPassword_activity" />
         <activity android:name=".ChangePassword_activity" />
+
     </application>
 
 </manifest>
