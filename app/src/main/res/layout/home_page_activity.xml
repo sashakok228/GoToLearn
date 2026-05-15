@@ -1,0 +1,338 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fonzakryglen">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/fonzakryglen"
+        android:paddingBottom="30dp"
+        tools:ignore="MissingConstraints">
+
+        <!-- Волна (фон), которая уходит вниз -->
+        <View
+            android:id="@+id/headerCurve"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@drawable/header_wave"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Аватар пользователя (слева) -->
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Приветствие (справа от аватара) -->
+        <TextView
+            android:id="@+id/tvGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:paddingBottom="30dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="Hi, Alex!"
+            android:textColor="@color/texticons"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@id/ivAvatar" />
+
+        <!-- Плашка со стриком -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/streakBox"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/streak_box"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivAvatar">
+
+            <!-- Текст внутри плашки -->
+            <TextView
+                android:id="@+id/tvCongrats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_bold"
+                android:text="Congratulations!"
+                android:textColor="@color/texticons"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvStreakText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_bold"
+                android:text="8 Дней стрик"
+                android:textColor="@color/texticons"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- Медалька (накладывается справа) -->
+            <FrameLayout
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_medal" /> <!-- Твоя иконка медали -->
+
+                <TextView
+                    android:id="@+id/tvStreakNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:text="8"
+                    android:textColor="@color/texticons"
+                    android:textSize="30sp" />
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardDiscipline1"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/streak_box"
+            android:padding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/streakBox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+
+            <!-- Иконка дисциплины (Микроскоп) -->
+            <ImageView
+                android:id="@+id/ivSubjectIcon"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/ic_negotovlogo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Название дисциплины -->
+            <TextView
+                android:id="@+id/tvSubjectTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="Биология"
+                android:textColor="#005B71"
+                android:textSize="24sp"
+                app:layout_constraintStart_toEndOf="@id/ivSubjectIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Прогресс текстом (10/30) -->
+            <TextView
+                android:id="@+id/tvProgressRatio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="10/30"
+                android:textColor="#005B71"
+                android:textSize="22sp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@+id/pbDiscipline"
+                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle" />
+
+            <!-- Кастомный прогресс-бар -->
+            <ProgressBar
+                android:id="@+id/pbDiscipline"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="150dp"
+                android:layout_height="12dp"
+                android:progress="10"
+                android:max="30"
+                android:progressDrawable="@drawable/custom_progress_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Кнопка Play (Твоя готовая иконка с белым фоном) -->
+            <ImageButton
+                android:id="@+id/btnPlayDiscipline"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_play"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardDiscipline2"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/streak_box"
+            android:padding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/cardDiscipline1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+
+            <!-- Иконка дисциплины (Микроскоп) -->
+            <ImageView
+                android:id="@+id/ivSubjectIcon2"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/ic_negotovlogo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Название дисциплины -->
+            <TextView
+                android:id="@+id/tvSubjectTitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="Биология"
+                android:textColor="#005B71"
+                android:textSize="24sp"
+                app:layout_constraintStart_toEndOf="@id/ivSubjectIcon2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Прогресс текстом (10/30) -->
+            <TextView
+                android:id="@+id/tvProgressRatio2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="10/30"
+                android:textColor="#005B71"
+                android:textSize="22sp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@+id/pbDiscipline2"
+                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2" />
+
+            <!-- Кастомный прогресс-бар -->
+            <ProgressBar
+                android:id="@+id/pbDiscipline2"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="150dp"
+                android:layout_height="12dp"
+                android:progress="10"
+                android:max="30"
+                android:progressDrawable="@drawable/custom_progress_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Кнопка Play (Твоя готовая иконка с белым фоном) -->
+            <ImageButton
+                android:id="@+id/btnPlayDiscipline2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_play"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <!-- Нижняя навигация -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/bottom_nav_bg"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Кнопка: HOME -->
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/navProfile">
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="5dp"
+                android:background="@drawable/nav_indicator"
+                android:layout_marginBottom="7dp" />
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/texticons" />
+        </LinearLayout>
+
+        <!-- Кнопка: PROFILE (Аватар с книгой) -->
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toEndOf="@+id/navHome"
+            app:layout_constraintEnd_toStartOf="@+id/navLibrary">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_avaterbook" /> <!-- Используй иконку с человечком и книгой -->
+        </LinearLayout>
+
+        <!-- Кнопка: LIBRARY (Книга) -->
+        <LinearLayout
+            android:id="@+id/navLibrary"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toEndOf="@+id/navProfile"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_book"
+                app:tint="@color/texticons" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

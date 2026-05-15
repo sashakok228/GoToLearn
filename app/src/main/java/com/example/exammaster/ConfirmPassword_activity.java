@@ -1,6 +1,5 @@
 package com.example.exammaster;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
-public class confirmpassword_activity extends AppCompatActivity {
+public class ConfirmPassword_activity extends AppCompatActivity {
 
     private EditText code1, code2, code3, code4;
     private TextView tvResend;
