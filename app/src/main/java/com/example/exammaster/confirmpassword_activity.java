@@ -26,6 +26,9 @@ public class confirmpassword_activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
         setContentView(R.layout.confirmpassword_activity);
 
         // Инициализация всех элементов
@@ -63,20 +66,20 @@ public class confirmpassword_activity extends AppCompatActivity {
     }
 
     private void setupCodeInputs() {
-        // Переход вперед при вводе
+
         code1.addTextChangedListener(new GenericTextWatcher(code1, code2));
         code2.addTextChangedListener(new GenericTextWatcher(code2, code3));
         code3.addTextChangedListener(new GenericTextWatcher(code3, code4));
         code4.addTextChangedListener(new GenericTextWatcher(code4, null));
 
-        // Переход назад при нажатии Backspace
+
         code1.setOnKeyListener(new GenericKeyEvent(code1, null));
         code2.setOnKeyListener(new GenericKeyEvent(code2, code1));
         code3.setOnKeyListener(new GenericKeyEvent(code3, code2));
         code4.setOnKeyListener(new GenericKeyEvent(code4, code3));
     }
 
-    // Класс для движения КУРСОР ВПЕРЕД
+    
     public class GenericTextWatcher implements TextWatcher {
         private final View currentView;
         private final View nextView;

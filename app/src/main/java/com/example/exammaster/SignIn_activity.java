@@ -1,4 +1,4 @@
-package com.example.exammaster;
+package com.example.exammaster; // Проверь название своего пакета
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,46 +9,79 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.exammaster.Registration_activity;
-
 public class SignIn_activity extends AppCompatActivity {
+
+    private EditText etEmail, etPassword;
+    private Button btnSignIn;
+    private TextView tvForgotPassword, tvRegisterLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_in_activity);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+        setContentView(R.layout.sign_in_activity); // Убедись, что название XML совпадает (может быть activity_login)
 
-        Button btnSignIn = findViewById(R.id.btnSignIn);
-        TextView tvRegisterLink = findViewById(R.id.tvRegisterLink);
-        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        // 1. Инициализация элементов
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        btnSignIn = findViewById(R.id.btnSignIn);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        tvRegisterLink = findViewById(R.id.tvRegisterLink);
 
-        // Кнопка входа
-        btnSignIn.setOnClickListener(v -> {
-            Toast.makeText(this, "Signing In...", Toast.LENGTH_SHORT).show();
+        // 2. Логика кнопки входа (Sign In)
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSignIn();
+            }
         });
 
-        // Забыли пароль
-        tvForgotPassword.setOnClickListener(v -> {
-            Toast.makeText(this, "Reset Password Screen", Toast.LENGTH_SHORT).show();
+        // 3. Переход на экран восстановления пароля
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignIn_activity.this, ForgotPassword_activity.class);
+                startActivity(intent);
+            }
         });
 
-        // Настройка ссылки "Register"
-        setupRegisterLink(tvRegisterLink);
+        // 4. Настройка кликабельной ссылки "Register" внизу
+        setupRegisterLink();
     }
 
-    private void setupRegisterLink(TextView textView) {
-        String text = "Don't have an account? Register";
+    private void handleSignIn() {
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+        } else {
+            // Здесь будет логика проверки данных через базу или сервер
+            Toast.makeText(this, "Success! Logging in...", Toast.LENGTH_SHORT).show();
+
+            // ПЕРЕХОД НА ГЛАВНЫЙ ЭКРАН ПРИЛОЖЕНИЯ (если он уже создан)
+            // Intent intent = new Intent(SignIn_activity.this, MainActivity.class);
+            // startActivity(intent);
+        }
+    }
+
+    private void setupRegisterLink() {
+        String text = "Don’t have an account? Register";
         SpannableString ss = new SpannableString(text);
 
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                // ПЕРЕХОД НА РЕГИСТРАЦИЮ
+                // Переход на экран регистрации
                 Intent intent = new Intent(SignIn_activity.this, Registration_activity.class);
                 startActivity(intent);
             }
@@ -56,16 +89,17 @@ public class SignIn_activity extends AppCompatActivity {
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.vidilenievsego)); // Оранжевый
-                ds.setUnderlineText(false);
-                ds.setFakeBoldText(true);
+                // Оранжевый цвет для слова "Register"
+                ds.setColor(getResources().getColor(R.color.vidilenievsego));
+                ds.setUnderlineText(false); // Убираем подчеркивание
+                ds.setFakeBoldText(true);   // Делаем жирным
             }
         };
 
-        // Индексы для слова "Register" (символы с 23 до конца строки)
+        // Указываем индексы для слова "Register" (начинается с 23 символа)
         ss.setSpan(clickableSpan, 23, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        textView.setText(ss);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        tvRegisterLink.setText(ss);
+        tvRegisterLink.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }
