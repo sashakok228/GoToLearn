@@ -1,0 +1,236 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fonzakryglen">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/fonzakryglen"
+        android:id="@+id/header"
+        android:paddingBottom="30dp"
+        tools:ignore="MissingConstraints">
+
+        <!-- Волна (фон), которая уходит вниз -->
+        <View
+            android:id="@+id/headerCurve"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:background="@drawable/header_wave"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Аватар пользователя (слева) -->
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_openbook"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Приветствие (справа от аватара) -->
+        <TextView
+            android:id="@+id/tvGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:paddingBottom="30dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="Disciplines"
+            android:textColor="@color/texticons"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@id/ivAvatar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintTop_toBottomOf="@id/header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <!-- КАРТОЧКА: ФИЗИКА -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/streak_box"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/ivIcon1"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:src="@drawable/ic_negotovlogo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvSubjectTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:text="Физика"
+                    android:textColor="@color/texticons"
+                    android:textSize="28sp"
+                    app:layout_constraintStart_toEndOf="@id/ivIcon1"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvProgressRatio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="10/30"
+                    android:textColor="@color/texticons"
+                    android:textSize="25sp"
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
+                    app:layout_constraintTop_toBottomOf="@id/tvSubjectTitle" />
+
+                <ProgressBar
+                    android:id="@+id/pb1"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="165dp"
+                    android:layout_height="15dp"
+                    android:progress="15"
+                    android:max="20"
+                    android:progressDrawable="@drawable/custom_progress_bar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
+                    android:layout_marginBottom="5dp"/>
+
+                <!-- Иконка настроек (шестеренка) -->
+                <ImageView
+                    android:id="@+id/settings"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/ic_settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <ImageButton
+                    android:id="@+id/btnPlay1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_play"
+                    app:layout_constraintBottom_toTopOf="@+id/pb1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/settings" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- ПОВТОРИ ТАКОЙ ЖЕ БЛОК ДЛЯ БИОЛОГИИ И ДРУГИХ -->
+            <!-- ... -->
+
+            <!-- КНОПКА СОЗДАНИЯ -->
+            <Button
+                android:id="@+id/btnCreateDiscipline"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/knopki"
+                android:text="Создать дисциплину"
+                android:textAllCaps="false"
+                android:textColor="@color/texticons"
+                android:textSize="20sp"
+                android:fontFamily="@font/ubuntu_regular"
+                app:cornerRadius="30dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/bottom_nav_bg"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Кнопка: HOME -->
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/navProfile">
+
+
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/texticons" />
+        </LinearLayout>
+
+        <!-- Кнопка: PROFILE (Аватар с книгой) -->
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="14dp"
+            app:layout_constraintStart_toEndOf="@+id/navHome"
+            app:layout_constraintEnd_toStartOf="@+id/navLibrary">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_avaterbook" /> <!-- Используй иконку с человечком и книгой -->
+        </LinearLayout>
+
+        <!-- Кнопка: LIBRARY (Книга) -->
+        <LinearLayout
+            android:id="@+id/navLibrary"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            app:layout_constraintStart_toEndOf="@+id/navProfile"
+            app:layout_constraintEnd_toEndOf="parent">
+            <View
+                android:layout_width="50dp"
+                android:layout_height="5dp"
+                android:background="@drawable/nav_indicator"
+                android:layout_marginBottom="7dp" />
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_book"
+                app:tint="@color/texticons" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -111,154 +111,140 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardDiscipline1"
+            android:id="@+id/discipline1"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="150dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="60dp"
             android:background="@drawable/streak_box"
-            android:padding="15dp"
-            app:layout_constraintTop_toBottomOf="@id/streakBox"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/streakBox">
 
-
-            <!-- Иконка дисциплины (Микроскоп) -->
             <ImageView
-                android:id="@+id/ivSubjectIcon"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:id="@+id/ivIcon1"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
                 android:src="@drawable/ic_negotovlogo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Название дисциплины -->
             <TextView
                 android:id="@+id/tvSubjectTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/ubuntu_regular"
-                android:text="Биология"
-                android:textColor="#005B71"
-                android:textSize="24sp"
-                app:layout_constraintStart_toEndOf="@id/ivSubjectIcon"
+                android:text="Физика"
+                android:textColor="@color/texticons"
+                android:textSize="28sp"
+                app:layout_constraintStart_toEndOf="@id/ivIcon1"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Прогресс текстом (10/30) -->
             <TextView
                 android:id="@+id/tvProgressRatio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu_regular"
+                android:fontFamily="@font/ubuntu_bold"
                 android:text="10/30"
-                android:textColor="#005B71"
-                android:textSize="22sp"
-                android:layout_marginBottom="4dp"
-                app:layout_constraintBottom_toTopOf="@+id/pbDiscipline"
-                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle" />
+                android:textColor="@color/texticons"
+                android:textSize="25sp"
+                android:layout_marginTop="25dp"
+                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
+                app:layout_constraintTop_toBottomOf="@id/tvSubjectTitle" />
 
-            <!-- Кастомный прогресс-бар -->
             <ProgressBar
-                android:id="@+id/pbDiscipline"
+                android:id="@+id/pb1"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="150dp"
-                android:layout_height="12dp"
-                android:progress="10"
-                android:max="30"
+                android:layout_width="165dp"
+                android:layout_height="15dp"
+                android:progress="15"
+                android:max="20"
                 android:progressDrawable="@drawable/custom_progress_bar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="5dp"/>
 
-            <!-- Кнопка Play (Твоя готовая иконка с белым фоном) -->
             <ImageButton
-                android:id="@+id/btnPlayDiscipline"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_play"
+                android:id="@+id/btnPlay1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/ic_play"
+                app:layout_constraintBottom_toTopOf="@+id/pb1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/settings" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardDiscipline2"
+            android:id="@+id/discipline2"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="150dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/streak_box"
-            android:padding="15dp"
-            app:layout_constraintTop_toBottomOf="@id/cardDiscipline1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/discipline1">
 
-
-            <!-- Иконка дисциплины (Микроскоп) -->
             <ImageView
-                android:id="@+id/ivSubjectIcon2"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:id="@+id/ivIcon2"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
                 android:src="@drawable/ic_negotovlogo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Название дисциплины -->
             <TextView
                 android:id="@+id/tvSubjectTitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/ubuntu_regular"
-                android:text="Биология"
-                android:textColor="#005B71"
-                android:textSize="24sp"
-                app:layout_constraintStart_toEndOf="@id/ivSubjectIcon2"
+                android:text="Физика"
+                android:textColor="@color/texticons"
+                android:textSize="28sp"
+                app:layout_constraintStart_toEndOf="@id/ivIcon2"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Прогресс текстом (10/30) -->
             <TextView
                 android:id="@+id/tvProgressRatio2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu_regular"
+                android:fontFamily="@font/ubuntu_bold"
                 android:text="10/30"
-                android:textColor="#005B71"
-                android:textSize="22sp"
-                android:layout_marginBottom="4dp"
-                app:layout_constraintBottom_toTopOf="@+id/pbDiscipline2"
-                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2" />
+                android:textColor="@color/texticons"
+                android:textSize="25sp"
+                android:layout_marginTop="25dp"
+                app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2"
+                app:layout_constraintTop_toBottomOf="@id/tvSubjectTitle2" />
 
-            <!-- Кастомный прогресс-бар -->
             <ProgressBar
-                android:id="@+id/pbDiscipline2"
+                android:id="@+id/pb2"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="150dp"
-                android:layout_height="12dp"
-                android:progress="10"
-                android:max="30"
+                android:layout_width="165dp"
+                android:layout_height="15dp"
+                android:progress="15"
+                android:max="20"
                 android:progressDrawable="@drawable/custom_progress_bar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="5dp"/>
 
-            <!-- Кнопка Play (Твоя готовая иконка с белым фоном) -->
             <ImageButton
-                android:id="@+id/btnPlayDiscipline2"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_play"
+                android:id="@+id/btnPlay2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/ic_play"
+                app:layout_constraintBottom_toTopOf="@+id/pb2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/settings2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
