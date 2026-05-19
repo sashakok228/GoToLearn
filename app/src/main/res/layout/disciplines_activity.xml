@@ -110,7 +110,7 @@
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="165dp"
                     android:layout_height="15dp"
-                    android:progress="15"
+                    android:progress="10"
                     android:max="20"
                     android:progressDrawable="@drawable/custom_progress_bar"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -140,26 +140,102 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- ПОВТОРИ ТАКОЙ ЖЕ БЛОК ДЛЯ БИОЛОГИИ И ДРУГИХ -->
-            <!-- ... -->
-
-            <!-- КНОПКА СОЗДАНИЯ -->
-            <Button
-                android:id="@+id/btnCreateDiscipline"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginTop="30dp"
-                android:backgroundTint="@color/knopki"
-                android:text="Создать дисциплину"
-                android:textAllCaps="false"
-                android:textColor="@color/texticons"
-                android:textSize="20sp"
-                android:fontFamily="@font/ubuntu_regular"
-                app:cornerRadius="30dp" />
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/streak_box"
+                android:padding="10dp">
 
+                <ImageView
+                    android:id="@+id/ivIcon2"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:src="@drawable/ic_negotovlogo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvSubjectTitle2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:text="Биология"
+                    android:textColor="@color/texticons"
+                    android:textSize="28sp"
+                    app:layout_constraintStart_toEndOf="@id/ivIcon2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvProgressRatio2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="20/30"
+                    android:textColor="@color/texticons"
+                    android:textSize="25sp"
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2"
+                    app:layout_constraintTop_toBottomOf="@id/tvSubjectTitle2" />
+
+                <ProgressBar
+                    android:id="@+id/pb2"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="165dp"
+                    android:layout_height="15dp"
+                    android:progress="15"
+                    android:max="20"
+                    android:progressDrawable="@drawable/custom_progress_bar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tvSubjectTitle2"
+                    android:layout_marginBottom="5dp"/>
+
+                <!-- Иконка настроек (шестеренка) -->
+                <ImageView
+                    android:id="@+id/settings2"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/ic_settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <ImageButton
+                    android:id="@+id/btnPlay2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_play"
+                    app:layout_constraintBottom_toTopOf="@+id/pb2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/settings2" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- ПОВТОРИ ТАКОЙ ЖЕ БЛОК ДЛЯ БИОЛОГИИ И ДРУГИХ -->
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/btnCreateDiscipline"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="@color/knopki"
+        android:text="Создать дисциплину"
+        android:textAllCaps="false"
+        android:textColor="@color/texticons"
+        android:textSize="20sp"
+        android:fontFamily="@font/ubuntu_regular"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomNavigation"
