@@ -7,4 +7,14 @@
 
     <style name="Theme.ExamMaster" parent="Base.Theme.ExamMaster" />
 
+    <style name="DifficultyButtonStyle">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">160dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/texticons</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:fontFamily">@font/ubuntu_regular</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 </resources>
