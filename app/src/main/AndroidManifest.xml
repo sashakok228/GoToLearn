@@ -18,7 +18,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".Registration_activity"
+            android:name=".SignIn_activity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,9 +26,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignIn_activity" />
+        <activity android:name=".Registration_activity" />
         <activity android:name=".ForgotPassword_activity" />
+        <activity android:name=".ConfirmPassword_activity" />
         <activity android:name=".ChangePassword_activity" />
+        <activity android:name=".Home_page_activity" />
+        <activity android:name=".Disciplines_activity" />
+        <activity android:name=".Disciplines_create_activity" />
+        <activity android:name=".Questions_activity" />
+        <activity android:name=".Create_question_activity" />
+        <activity android:name=".Prepare_training_activity" />
+        <activity android:name=".Game_activity" />
+        <activity android:name=".Profile_activity" />
 
     </application>
 
