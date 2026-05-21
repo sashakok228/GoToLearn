@@ -1,0 +1,109 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fonzakryglen">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/fonzakryglen"
+        android:id="@+id/header"
+        android:paddingBottom="30dp"
+        tools:ignore="MissingConstraints">
+
+        <!-- Волна (фон), которая уходит вниз -->
+        <View
+            android:id="@+id/headerCurve"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:background="@drawable/header_wave"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Аватар пользователя (слева) -->
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_playbook"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Приветствие (справа от аватара) -->
+        <TextView
+            android:id="@+id/tvSubjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:paddingBottom="30dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="Training"
+            android:textColor="@color/texticons"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@id/ivAvatar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Карточка вопроса -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardQuestion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="30dp"
+        app:cardBackgroundColor="#90E0EF"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header">
+
+        <TextView
+            android:id="@+id/tvQuestionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="30dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="Здесь будет текст вопроса или определение с пропусками..."
+            android:textColor="#005B71"
+            android:textSize="22sp"
+            android:gravity="center" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- ЗОНА ВВОДА / ВЫБОРА (будет меняться программно) -->
+    <LinearLayout
+        android:id="@+id/containerInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="30dp"
+        app:layout_constraintTop_toBottomOf="@id/cardQuestion">
+
+        <!-- Сюда будем добавлять кнопки или поле ввода через Java -->
+    </LinearLayout>
+
+    <!-- Кнопка "Проверить" -->
+    <Button
+        android:id="@+id/btnCheck"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@color/knopki"
+        android:text="Check"
+        android:textAllCaps="false"
+        android:textColor="@color/texticons"
+        android:textSize="20sp"
+        android:fontFamily="@font/ubuntu_bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

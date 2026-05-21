@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Create_question_activity extends AppCompatActivity {
 
     private EditText etQuestion, etAnswer;
-    private TextView tvDisciplineName;
+    private TextView tvTitle;
     private Button btnCreate;
 
     @Override
@@ -20,7 +20,7 @@ public class Create_question_activity extends AppCompatActivity {
 
         etQuestion = findViewById(R.id.etQuestion);
         etAnswer = findViewById(R.id.etAnswer);
-        tvDisciplineName = findViewById(R.id.tvTitle);
+        tvTitle = findViewById(R.id.tvTitle);
         btnCreate = findViewById(R.id.btnCreateQuestion);
 
         // В будущем сюда можно передавать название дисциплины через Intent
