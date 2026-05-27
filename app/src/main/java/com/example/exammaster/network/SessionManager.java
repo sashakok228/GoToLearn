@@ -18,6 +18,11 @@ public class SessionManager {
     }
 
     public void saveAuth(AuthResponse response) {
+        if (response == null || !isValidToken(response.getToken())) {
+            clear();
+            return;
+        }
+
         prefs.edit()
                 .putString(KEY_TOKEN, response.getToken())
                 .putLong(KEY_USER_ID, response.getUserId())
@@ -27,9 +32,14 @@ public class SessionManager {
     }
 
     public String getToken() {
-        return prefs.getString(KEY_TOKEN, null);
+        String token = prefs.getString(KEY_TOKEN, null);
+        return isValidToken(token) ? token : null;
     }
-
+    private boolean isValidToken(String token) {
+        return token != null
+                && !token.trim().isEmpty()
+                && !"null".equalsIgnoreCase(token.trim());
+    }
     public long getUserId() {
         return prefs.getLong(KEY_USER_ID, -1);
     }
@@ -43,7 +53,7 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn() {
-        return getToken() != null && !getToken().isEmpty();
+        return getToken() != null;
     }
 
     public void clear() {

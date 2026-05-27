@@ -50,36 +50,21 @@
             app:layout_constraintTop_toTopOf="@id/ivAvatar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDisciplines"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintTop_toBottomOf="@id/header">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="20dp">
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDisciplines"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="10dp"
-                android:clipToPadding="false"
-                android:paddingBottom="20dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toTopOf="@id/btnCreateDiscipline"
-                app:layout_constraintTop_toBottomOf="@id/header"
-                tools:itemCount="5"
-                tools:listitem="@layout/item_discipline_grid_play" />
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toTopOf="@id/btnCreateDiscipline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_discipline_settings" />
 
     <Button
         android:id="@+id/btnCreateDiscipline"

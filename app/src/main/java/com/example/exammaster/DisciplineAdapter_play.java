@@ -27,7 +27,7 @@ public class DisciplineAdapter_play extends RecyclerView.Adapter<DisciplineAdapt
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // ВОТ ЗДЕСЬ МЫ ПОДКЛЮЧАЕМ ТВОЮ КАРТОЧКУ ПО ИМЕНИ ФАЙЛА
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_discipline_grid_play, parent, false);
+                .inflate(R.layout.item_home_discipline, parent, false);
         return new ViewHolder(view);
     }
 
@@ -65,13 +65,7 @@ public class DisciplineAdapter_play extends RecyclerView.Adapter<DisciplineAdapt
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Привязываем переменные к ID из файла item_discipline_grid_play.xml
-            ivIcon1 = itemView.findViewById(R.id.ivIcon1);
-            tvSubjectTitle = itemView.findViewById(R.id.tvSubjectTitle);
-            tvProgressRatio = itemView.findViewById(R.id.tvProgressRatio);
-            pb1 = itemView.findViewById(R.id.pb1);
-            settings = itemView.findViewById(R.id.settings);
-            btnPlay1 = itemView.findViewById(R.id.btnPlay1);
+
         }
     }
 }

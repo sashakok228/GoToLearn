@@ -1,93 +1,265 @@
 package com.example.exammaster;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.exammaster.network.SessionManager;
+import com.example.exammaster.network.SubjectApi;
+import com.example.exammaster.network.SubjectListCallback;
+import com.example.exammaster.network.SubjectResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Home_page_activity extends AppCompatActivity {
 
-    private TextView tvGreeting, tvStreakText, tvStreakNumber;
-    private ProgressBar pbDiscipline1, pbDiscipline2;
-    private ImageButton btnPlay1, btnPlay2;
+    private static final String TAG = "Home_page_activity";
 
+    private TextView tvGreeting;
+    private TextView tvStreakText;
+    private TextView tvStreakNumber;
+    private RecyclerView rvHomeDisciplines;
 
-    @SuppressLint({"WrongViewCast", "MissingInflatedId"})
+    private SessionManager sessionManager;
+    private SubjectApi subjectApi;
+    private HomeDisciplineAdapter adapter;
+
+    private final List<SubjectResponse> subjects = new ArrayList<>();
+
+    private boolean firstLoadDone = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_page_activity); // Убедись, что XML называется так
+        setContentView(R.layout.home_page_activity);
 
-        // 1. Инициализация элементов хедера (приветствие и стрик)
         tvGreeting = findViewById(R.id.tvGreeting);
         tvStreakText = findViewById(R.id.tvStreakText);
         tvStreakNumber = findViewById(R.id.tvStreakNumber);
+        rvHomeDisciplines = findViewById(R.id.rvHomeDisciplines);
 
-        // 2. Инициализация карточек дисциплин (прогресс и кнопки)
-        // Если у тебя две разные карточки, ID у них должны отличаться (например pb1 и pb2)
-        pbDiscipline1 = findViewById(R.id.pbDiscipline1);
-        btnPlay1 = findViewById(R.id.btnPlay1);
+        sessionManager = new SessionManager(this);
+        subjectApi = new SubjectApi();
 
-        // 3. Загрузка данных пользователя
+        setupRecyclerView();
         loadUserData();
-
-        // 4. Настройка прогресса (для примера)
-        setupRecentDisciplines();
-
-        // 5. Настройка нижней навигации
         setupBottomNavigation();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        /*
+         * Загружаем именно здесь, чтобы после создания дисциплины
+         * список автоматически обновлялся при возврате на Home.
+         */
+        loadSubjectsFromServer();
+        firstLoadDone = true;
+    }
+
+    private void setupRecyclerView() {
+        adapter = new HomeDisciplineAdapter(subjects, subject -> {
+            Intent intent = new Intent(Home_page_activity.this, Prepare_training_activity.class);
+
+            intent.putExtra("subjectId", subject.getId());
+            intent.putExtra("subjectName", subject.getName());
+
+            // Пока ставим режим теста.
+            // Если захочешь режим определений, можно заменить на "Definition".
+            intent.putExtra("MODE", "Test");
+
+            startActivity(intent);
+        });
+
+        rvHomeDisciplines.setLayoutManager(new LinearLayoutManager(this));
+        rvHomeDisciplines.setAdapter(adapter);
+    }
+
     private void loadUserData() {
-        // Достаем имя, сохраненное при регистрации
         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String name = sharedPref.getString("userName", "Alex");
+
+        String name = sharedPref.getString("userName", null);
+
+        if (name == null || name.trim().isEmpty()) {
+            name = sessionManager.getUsername();
+        }
+
+        if (name == null || name.trim().isEmpty()) {
+            name = "Alex";
+        }
+
         int streak = sharedPref.getInt("userStreak", 8);
 
-        // Устанавливаем данные на экран
         tvGreeting.setText("Hi, " + name + "!");
         tvStreakText.setText(streak + " Дней стрик");
         tvStreakNumber.setText(String.valueOf(streak));
     }
 
-    private void setupRecentDisciplines() {
-        // Устанавливаем прогресс для первой карточки (например, 10 из 30)
-        if (pbDiscipline1 != null) {
-            pbDiscipline1.setMax(30);
-            pbDiscipline1.setProgress(10);
+    private void loadSubjectsFromServer() {
+        String token = sessionManager.getToken();
+
+        if (isBadToken(token)) {
+            subjects.clear();
+            adapter.notifyDataSetChanged();
+
+            Toast.makeText(
+                    this,
+                    "Нет токена. Сначала войдите в аккаунт",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
         }
 
-        // Логика кнопки Play в карточке
-        if (btnPlay1 != null) {
-            btnPlay1.setOnClickListener(v -> {
-                Intent intent = new Intent(Home_page_activity.this, Prepare_training_activity.class);
-                intent.putExtra("MODE", "Definition"); // Передаем режим обучения
+        subjectApi.getSubjects(token, new SubjectListCallback() {
+            @Override
+            public void onSuccess(List<SubjectResponse> loadedSubjects) {
+                subjects.clear();
+
+                if (loadedSubjects != null) {
+                    subjects.addAll(loadedSubjects);
+                }
+
+                adapter.notifyDataSetChanged();
+
+                Log.d(TAG, "Loaded subjects count: " + subjects.size());
+
+
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Ошибка загрузки дисциплин: " + errorMessage);
+
+                subjects.clear();
+                adapter.notifyDataSetChanged();
+
+                Toast.makeText(
+                        Home_page_activity.this,
+                        "Ошибка загрузки дисциплин: " + errorMessage,
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+    }
+
+    private boolean isBadToken(String token) {
+        return token == null
+                || token.trim().isEmpty()
+                || token.trim().equalsIgnoreCase("null");
+    }
+
+    private void setupBottomNavigation() {
+        View navProfile = findViewById(R.id.navProfile);
+        if (navProfile != null) {
+            navProfile.setOnClickListener(v -> {
+                Intent intent = new Intent(Home_page_activity.this, Profile_activity.class);
                 startActivity(intent);
+            });
+        }
+
+        View navLibrary = findViewById(R.id.navLibrary);
+        if (navLibrary != null) {
+            navLibrary.setOnClickListener(v -> {
+                Intent intent = new Intent(Home_page_activity.this, Disciplines_activity.class);
+                startActivity(intent);
+            });
+        }
+
+        View navHome = findViewById(R.id.navHome);
+        if (navHome != null) {
+            navHome.setOnClickListener(v -> {
+                // Уже на главном экране
             });
         }
     }
 
-    private void setupBottomNavigation() {
-        // Кнопка ПРОФИЛЬ (центральная иконка)
-        findViewById(R.id.navProfile).setOnClickListener(v -> {
-            // Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            // startActivity(intent);
-        });
+    private interface OnSubjectClickListener {
+        void onSubjectClick(SubjectResponse subject);
+    }
 
-        // Кнопка ДИСЦИПЛИНЫ (правая иконка книги)
-        findViewById(R.id.navLibrary).setOnClickListener(v -> {
-            Intent intent = new Intent(Home_page_activity.this, Disciplines_activity.class);
-            startActivity(intent);
-        });
+    private static class HomeDisciplineAdapter
+            extends RecyclerView.Adapter<HomeDisciplineAdapter.HomeDisciplineViewHolder> {
 
-        // Иконка ДОМ (текущий экран) — обычно ничего не делает или скроллит вверх
-        findViewById(R.id.navHome).setOnClickListener(v -> {
-            // Мы уже здесь
-        });
+        private final List<SubjectResponse> items;
+        private final OnSubjectClickListener listener;
+
+        public HomeDisciplineAdapter(List<SubjectResponse> items, OnSubjectClickListener listener) {
+            this.items = items;
+            this.listener = listener;
+        }
+
+        @NonNull
+        @Override
+        public HomeDisciplineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_home_discipline, parent, false);
+
+            return new HomeDisciplineViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull HomeDisciplineViewHolder holder, int position) {
+            SubjectResponse subject = items.get(position);
+            holder.bind(subject, listener);
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.size();
+        }
+
+        static class HomeDisciplineViewHolder extends RecyclerView.ViewHolder {
+
+            private final TextView tvSubjectTitle;
+            private final TextView tvProgressRatio;
+            private final ProgressBar pbProgress;
+            private final ImageButton btnPlay;
+
+            public HomeDisciplineViewHolder(@NonNull View itemView) {
+                super(itemView);
+
+                tvSubjectTitle = itemView.findViewById(R.id.tvSubjectTitle);
+                tvProgressRatio = itemView.findViewById(R.id.tvProgressRatio);
+                pbProgress = itemView.findViewById(R.id.pbProgress);
+                btnPlay = itemView.findViewById(R.id.btnPlay);
+            }
+
+            public void bind(SubjectResponse subject, OnSubjectClickListener listener) {
+                String subjectName = subject.getName();
+
+                if (subjectName == null || subjectName.trim().isEmpty()) {
+                    subjectName = "Без названия";
+                }
+
+                tvSubjectTitle.setText(subjectName);
+
+                /*
+                 * Пока сервер не отдаёт прогресс, поэтому ставим заглушку.
+                 * Список дисциплин от этого выводиться должен.
+                 */
+                tvProgressRatio.setText("0/0");
+                pbProgress.setMax(100);
+                pbProgress.setProgress(0);
+
+                btnPlay.setOnClickListener(v -> listener.onSubjectClick(subject));
+                itemView.setOnClickListener(v -> listener.onSubjectClick(subject));
+            }
+        }
     }
 }

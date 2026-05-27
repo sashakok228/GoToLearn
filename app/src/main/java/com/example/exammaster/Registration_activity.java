@@ -77,17 +77,26 @@ public class Registration_activity extends AppCompatActivity {
         RegisterRequest request = new RegisterRequest(name, email, pass);
 
         authApi.register(request, new AuthCallback() {
+
             @Override
             public void onSuccess(AuthResponse response) {
                 btnRegister.setEnabled(true);
 
-                sessionManager.saveAuth(response);
+                /*
+                 * Сервер при регистрации возвращает token = null,
+                 * потому что пользователь ещё не подтвердил почту.
+                 * Поэтому НЕ сохраняем сессию и НЕ открываем Home_page_activity.
+                 */
+                sessionManager.clear();
 
-                Toast.makeText(Registration_activity.this,
-                        "Registration successful!",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        Registration_activity.this,
+                        "Регистрация успешна. Подтверди почту и войди в аккаунт",
+                        Toast.LENGTH_LONG
+                ).show();
 
-                Intent intent = new Intent(Registration_activity.this, Home_page_activity.class);
+                Intent intent = new Intent(Registration_activity.this, SignIn_activity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             }
