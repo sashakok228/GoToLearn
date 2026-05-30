@@ -33,7 +33,12 @@ public class SessionManager {
 
     public String getToken() {
         String token = prefs.getString(KEY_TOKEN, null);
-        return isValidToken(token) ? token : null;
+
+        if (token == null || token.trim().isEmpty() || token.equalsIgnoreCase("null")) {
+            return null;
+        }
+
+        return token;
     }
     private boolean isValidToken(String token) {
         return token != null

@@ -44,8 +44,7 @@ public class Disciplines_activity extends AppCompatActivity {
         btnCreateDiscipline = findViewById(R.id.btnCreateDiscipline);
 
         sessionManager = new SessionManager(this);
-        subjectApi = new SubjectApi();
-
+        subjectApi = new SubjectApi(this);
         setupRecyclerView();
         setupCreateButton();
         setupNavigation();
@@ -119,6 +118,11 @@ public class Disciplines_activity extends AppCompatActivity {
 
             @Override
             public void onError(String errorMessage) {
+                if (AuthRedirector.isUnauthorizedError(errorMessage)) {
+                    AuthRedirector.logoutToSignIn(Disciplines_activity.this);
+                    return;
+                }
+
                 Toast.makeText(
                         Disciplines_activity.this,
                         "Ошибка загрузки дисциплин: " + errorMessage,

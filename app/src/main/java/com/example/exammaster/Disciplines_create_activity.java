@@ -38,8 +38,7 @@ public class Disciplines_create_activity extends AppCompatActivity {
         btnCreate = findViewById(R.id.btnCreate);
 
         sessionManager = new SessionManager(this);
-        subjectApi = new SubjectApi();
-
+        subjectApi = new SubjectApi(this);
         setupAvatarClick();
         setupCreateButton();
         setupNavigation();

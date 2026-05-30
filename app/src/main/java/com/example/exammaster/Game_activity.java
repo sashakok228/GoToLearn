@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class Game_activity extends AppCompatActivity {
 
@@ -34,23 +35,20 @@ public class Game_activity extends AppCompatActivity {
     private SessionManager sessionManager;
     private GameApi gameApi;
 
-    private String mode = "Definition";
+    private long subjectId = -1;
+    private String subjectName = "Тренировка";
     private String difficulty = "Normal";
 
-    private long subjectId = -1;
-    private String subjectName = "Training";
-
     private final List<GameQuestion> questions = new ArrayList<>();
+    private final Random random = new Random();
 
     private int currentQuestionIndex = 0;
     private int correctAnswersCount = 0;
 
     private GameQuestion currentQuestion;
-    private EditText currentInput;
 
-    private String selectedDefinitionAnswer = null;
-    private Button selectedDefinitionButton = null;
-    private String definitionEasyTemplate = null;
+    private EditText answerInput;
+    private String hiddenWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +61,7 @@ public class Game_activity extends AppCompatActivity {
         btnCheck = findViewById(R.id.btnCheck);
 
         sessionManager = new SessionManager(this);
-        gameApi = new GameApi();
-
+        gameApi = new GameApi(this);
         readIntentData();
         loadQuestionsFromServer();
     }
@@ -77,11 +74,6 @@ public class Game_activity extends AppCompatActivity {
         String subjectNameFromIntent = intent.getStringExtra("subjectName");
         if (subjectNameFromIntent != null && !subjectNameFromIntent.trim().isEmpty()) {
             subjectName = subjectNameFromIntent;
-        }
-
-        String modeFromIntent = intent.getStringExtra("MODE");
-        if (modeFromIntent != null && !modeFromIntent.trim().isEmpty()) {
-            mode = modeFromIntent;
         }
 
         String difficultyFromIntent = intent.getStringExtra("DIFFICULTY");
@@ -162,174 +154,163 @@ public class Game_activity extends AppCompatActivity {
 
     private void showCurrentQuestion() {
         containerInput.removeAllViews();
-
-        selectedDefinitionAnswer = null;
-        selectedDefinitionButton = null;
-        definitionEasyTemplate = null;
-        currentInput = null;
+        answerInput = null;
+        hiddenWord = null;
 
         currentQuestion = questions.get(currentQuestionIndex);
 
         tvSubjectName.setText(
-                "Вопрос " + (currentQuestionIndex + 1) + "/" + questions.size()
+                subjectName + " — вопрос " +
+                        (currentQuestionIndex + 1) + "/" + questions.size()
         );
 
-        if ("Practice".equalsIgnoreCase(difficulty)) {
-            renderPracticeLogic();
+        if ("Easy".equalsIgnoreCase(difficulty)) {
+            showMissingWordGame();
+        } else if ("Normal".equalsIgnoreCase(difficulty)) {
+            /*
+             * На нормальной сложности иногда пропуск слова,
+             * иногда выбор правильного ответа.
+             */
+            boolean useMissingWord = random.nextBoolean();
+
+            if (useMissingWord) {
+                showMissingWordGame();
+            } else {
+                showChoiceGame();
+            }
+        } else if ("Hard".equalsIgnoreCase(difficulty)) {
+            showChoiceGame();
+        } else if ("Practice".equalsIgnoreCase(difficulty)) {
+            showPracticeGame();
+        } else {
+            showChoiceGame();
+        }
+    }
+
+    // ------------------------------------------------------------
+    // EASY / NORMAL: пропущенное слово в правильном ответе
+    // ------------------------------------------------------------
+
+    private void showMissingWordGame() {
+        String correctAnswer = currentQuestion.getCorrectAnswer();
+
+        if (isEmpty(correctAnswer)) {
+            Toast.makeText(this, "У вопроса нет правильного ответа", Toast.LENGTH_LONG).show();
+            goToNextQuestion();
             return;
         }
 
-        if ("Definition".equalsIgnoreCase(mode)) {
-            renderDefinitionLogic();
-        } else {
-            renderTestLogic();
-        }
-    }
+        MaskedAnswer maskedAnswer = makeMaskedAnswer(correctAnswer);
 
-    // ------------------------------------------------------------
-    // РЕЖИМ DEFINITION
-    // Easy   — выбор слова кнопками
-    // Normal — ввод короткого ответа
-    // Hard   — ввод полного ответа
-    // ------------------------------------------------------------
-
-    private void renderDefinitionLogic() {
-        if ("Easy".equalsIgnoreCase(difficulty)) {
-            renderDefinitionEasy();
-        } else if ("Normal".equalsIgnoreCase(difficulty)) {
-            renderDefinitionNormal();
-        } else if ("Hard".equalsIgnoreCase(difficulty)) {
-            renderDefinitionHard();
-        } else {
-            renderDefinitionNormal();
-        }
-    }
-
-    private void renderDefinitionEasy() {
-        String questionText = currentQuestion.getQuestionText();
+        hiddenWord = maskedAnswer.hiddenWord;
 
         /*
-         * Если в вопросе есть "____", работаем как в исходной версии:
-         * пользователь нажимает слово, и оно вставляется в пропуск.
-         *
-         * Пример:
-         * "Интеграл — это операция нахождения ____ под графиком."
-         *
-         * Если пропуска нет, просто показываем вопрос и выбор кнопками.
+         * ВАЖНО:
+         * Здесь больше НЕ выводим сам вопрос.
+         * Показываем только правильный ответ с пропуском.
          */
-        definitionEasyTemplate = questionText;
-
-        if (questionText.contains("____")) {
-            tvQuestionText.setText(questionText);
-        } else {
-            tvQuestionText.setText(questionText + "\n\nВыбери правильный ответ:");
-        }
-
-        List<String> choices = new ArrayList<>();
-        choices.add(currentQuestion.getCorrectAnswer());
-
-        if (!isEmpty(currentQuestion.getWrongAnswer1())) {
-            choices.add(currentQuestion.getWrongAnswer1());
-        }
-
-        Collections.shuffle(choices);
-
-        for (String choice : choices) {
-            addWordChoice(choice);
-        }
-
-        btnCheck.setVisibility(View.VISIBLE);
-        btnCheck.setText("Check");
-        btnCheck.setOnClickListener(v -> checkDefinitionChoiceAnswer());
-    }
-
-    private void renderDefinitionNormal() {
-        tvQuestionText.setText(currentQuestion.getQuestionText());
-
-        addInputField("Введите пропущенное слово", false);
-
-        btnCheck.setVisibility(View.VISIBLE);
-        btnCheck.setText("Check");
-        btnCheck.setOnClickListener(v -> checkInputAnswer());
-    }
-
-    private void renderDefinitionHard() {
         tvQuestionText.setText(
-                "Напишите полный ответ:\n\n" + currentQuestion.getQuestionText()
+                "Заполни пропуск в правильном ответе:\n\n" +
+                        maskedAnswer.textWithGap
         );
 
-        addInputField("Введите полное определение...", true);
+        answerInput = new EditText(this);
+        answerInput.setHint("Введите пропущенное слово");
+        answerInput.setSingleLine(true);
+        answerInput.setGravity(Gravity.CENTER);
+        answerInput.setBackgroundResource(R.drawable.rounded_input);
+        answerInput.setPadding(40, 30, 40, 30);
+        answerInput.setTextColor(Color.BLACK);
+        answerInput.setHintTextColor(Color.GRAY);
+
+        LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        inputParams.setMargins(0, 0, 0, 40);
+        answerInput.setLayoutParams(inputParams);
+
+        containerInput.addView(answerInput);
 
         btnCheck.setVisibility(View.VISIBLE);
-        btnCheck.setText("Check");
-        btnCheck.setOnClickListener(v -> checkInputAnswer());
+        btnCheck.setText("Проверить");
+        btnCheck.setOnClickListener(v -> checkMissingWordAnswer());
     }
 
-    private void addWordChoice(String word) {
-        Button btn = new Button(this);
+    private MaskedAnswer makeMaskedAnswer(String correctAnswer) {
+        String[] words = correctAnswer.trim().split("\\s+");
 
-        btn.setText(word);
-        btn.setAllCaps(false);
-        btn.setBackgroundResource(R.drawable.rounded_input);
+        List<Integer> possibleIndexes = new ArrayList<>();
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                140
-        );
+        for (int i = 0; i < words.length; i++) {
+            String cleaned = cleanWord(words[i]);
 
-        lp.setMargins(0, 0, 0, 30);
-        btn.setLayoutParams(lp);
-
-        btn.setOnClickListener(v -> {
-            selectedDefinitionAnswer = word;
-
-            if (selectedDefinitionButton != null) {
-                selectedDefinitionButton.setBackgroundTintList(null);
+            if (cleaned.length() >= 3 && !isStopWord(cleaned)) {
+                possibleIndexes.add(i);
             }
+        }
 
-            selectedDefinitionButton = btn;
-            selectedDefinitionButton.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#90E0EF"))
-            );
+        int selectedIndex;
 
-            if (definitionEasyTemplate != null && definitionEasyTemplate.contains("____")) {
-                tvQuestionText.setText(definitionEasyTemplate.replace("____", word));
-            }
-        });
+        if (!possibleIndexes.isEmpty()) {
+            selectedIndex = possibleIndexes.get(random.nextInt(possibleIndexes.size()));
+        } else {
+            selectedIndex = 0;
+        }
 
-        containerInput.addView(btn);
+        String selectedWord = cleanWord(words[selectedIndex]);
+
+        if (selectedWord.isEmpty()) {
+            selectedWord = words[selectedIndex];
+        }
+
+        words[selectedIndex] = "____";
+
+        String textWithGap = String.join(" ", words);
+
+        return new MaskedAnswer(textWithGap, selectedWord);
     }
 
-    private void addInputField(String hint, boolean multiLine) {
-        EditText et = new EditText(this);
+    private void checkMissingWordAnswer() {
+        if (answerInput == null) {
+            return;
+        }
 
-        et.setHint(hint);
-        et.setGravity(multiLine ? Gravity.TOP : Gravity.CENTER);
-        et.setBackgroundResource(R.drawable.rounded_input);
-        et.setPadding(40, 40, 40, 40);
-        et.setSingleLine(!multiLine);
-        et.setTextColor(Color.BLACK);
+        String userAnswer = answerInput.getText().toString().trim();
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                multiLine ? 400 : LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+        if (userAnswer.isEmpty()) {
+            answerInput.setError("Введите пропущенное слово");
+            return;
+        }
 
-        lp.setMargins(0, 0, 0, 40);
-        et.setLayoutParams(lp);
+        boolean isCorrect = normalize(userAnswer).equals(normalize(hiddenWord));
 
-        currentInput = et;
-        containerInput.addView(et);
+        if (isCorrect) {
+            correctAnswersCount++;
+            Toast.makeText(this, "Верно!", Toast.LENGTH_SHORT).show();
+            answerInput.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+        } else {
+            Toast.makeText(
+                    this,
+                    "Неправильно. Пропущенное слово: " + hiddenWord,
+                    Toast.LENGTH_LONG
+            ).show();
+
+            answerInput.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+        }
+
+        answerInput.setEnabled(false);
+
+        btnCheck.setText("Дальше");
+        btnCheck.setOnClickListener(v -> goToNextQuestion());
     }
 
     // ------------------------------------------------------------
-    // РЕЖИМ TEST
-    // Easy   — 2 варианта
-    // Normal — 3 варианта
-    // Hard   — 4 варианта, потому что в БД пока 3 неправильных ответа
+    // NORMAL / HARD: выбор правильного варианта ответа
     // ------------------------------------------------------------
 
-    private void renderTestLogic() {
+    private void showChoiceGame() {
         tvQuestionText.setText(currentQuestion.getQuestionText());
 
         List<String> answers = new ArrayList<>();
@@ -340,16 +321,12 @@ public class Game_activity extends AppCompatActivity {
             answers.add(currentQuestion.getWrongAnswer1());
         }
 
-        if (!"Easy".equalsIgnoreCase(difficulty)) {
-            if (!isEmpty(currentQuestion.getWrongAnswer2())) {
-                answers.add(currentQuestion.getWrongAnswer2());
-            }
+        if (!isEmpty(currentQuestion.getWrongAnswer2())) {
+            answers.add(currentQuestion.getWrongAnswer2());
         }
 
-        if ("Hard".equalsIgnoreCase(difficulty)) {
-            if (!isEmpty(currentQuestion.getWrongAnswer3())) {
-                answers.add(currentQuestion.getWrongAnswer3());
-            }
+        if (!isEmpty(currentQuestion.getWrongAnswer3())) {
+            answers.add(currentQuestion.getWrongAnswer3());
         }
 
         Collections.shuffle(answers);
@@ -361,115 +338,27 @@ public class Game_activity extends AppCompatActivity {
         btnCheck.setVisibility(View.GONE);
     }
 
-    private void addAnswerButton(String text) {
+    private void addAnswerButton(String answerText) {
         Button btn = new Button(this);
 
-        btn.setText(text);
+        btn.setText(answerText);
         btn.setAllCaps(false);
         btn.setBackgroundResource(R.drawable.rounded_input);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 150
         );
 
-        lp.setMargins(0, 0, 0, 30);
-        btn.setLayoutParams(lp);
+        params.setMargins(0, 0, 0, 30);
+        btn.setLayoutParams(params);
 
-        btn.setOnClickListener(v -> checkTestAnswer(btn, text));
+        btn.setOnClickListener(v -> checkChoiceAnswer(btn, answerText));
 
         containerInput.addView(btn);
     }
 
-    // ------------------------------------------------------------
-    // PRACTICE
-    // ------------------------------------------------------------
-
-    private void renderPracticeLogic() {
-        tvQuestionText.setText(
-                currentQuestion.getQuestionText()
-                        + "\n\nПравильный ответ:\n"
-                        + currentQuestion.getCorrectAnswer()
-        );
-
-        btnCheck.setVisibility(View.VISIBLE);
-        btnCheck.setText("Дальше");
-        btnCheck.setOnClickListener(v -> goToNextQuestion());
-    }
-
-    // ------------------------------------------------------------
-    // ПРОВЕРКА ОТВЕТОВ
-    // ------------------------------------------------------------
-
-    private void checkDefinitionChoiceAnswer() {
-        if (selectedDefinitionAnswer == null || selectedDefinitionAnswer.trim().isEmpty()) {
-            Toast.makeText(this, "Выберите ответ", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        boolean isCorrect = normalize(selectedDefinitionAnswer)
-                .equals(normalize(currentQuestion.getCorrectAnswer()));
-
-        if (isCorrect) {
-            correctAnswersCount++;
-
-            if (selectedDefinitionButton != null) {
-                selectedDefinitionButton.setBackgroundTintList(
-                        ColorStateList.valueOf(Color.GREEN)
-                );
-            }
-
-            Toast.makeText(this, "Верно!", Toast.LENGTH_SHORT).show();
-        } else {
-            if (selectedDefinitionButton != null) {
-                selectedDefinitionButton.setBackgroundTintList(
-                        ColorStateList.valueOf(Color.RED)
-                );
-            }
-
-            Toast.makeText(this, "Неправильно", Toast.LENGTH_SHORT).show();
-            highlightCorrectButton();
-        }
-
-        disableAllButtons();
-
-        btnCheck.setText("Дальше");
-        btnCheck.setOnClickListener(v -> goToNextQuestion());
-    }
-
-    private void checkInputAnswer() {
-        if (currentInput == null) {
-            return;
-        }
-
-        String userAnswer = currentInput.getText().toString().trim();
-
-        if (userAnswer.isEmpty()) {
-            currentInput.setError("Введите ответ");
-            return;
-        }
-
-        boolean isCorrect = normalize(userAnswer)
-                .equals(normalize(currentQuestion.getCorrectAnswer()));
-
-        if (isCorrect) {
-            correctAnswersCount++;
-            Toast.makeText(this, "Верно!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(
-                    this,
-                    "Неправильно. Правильный ответ: " + currentQuestion.getCorrectAnswer(),
-                    Toast.LENGTH_LONG
-            ).show();
-        }
-
-        currentInput.setEnabled(false);
-
-        btnCheck.setText("Дальше");
-        btnCheck.setOnClickListener(v -> goToNextQuestion());
-    }
-
-    private void checkTestAnswer(Button selectedButton, String selectedAnswer) {
+    private void checkChoiceAnswer(Button selectedButton, String selectedAnswer) {
         boolean isCorrect = normalize(selectedAnswer)
                 .equals(normalize(currentQuestion.getCorrectAnswer()));
 
@@ -480,17 +369,17 @@ public class Game_activity extends AppCompatActivity {
         } else {
             selectedButton.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
             Toast.makeText(this, "Неправильно", Toast.LENGTH_SHORT).show();
-            highlightCorrectButton();
+            highlightCorrectAnswer();
         }
 
-        disableAllButtons();
+        disableAnswerButtons();
 
         btnCheck.setVisibility(View.VISIBLE);
         btnCheck.setText("Дальше");
         btnCheck.setOnClickListener(v -> goToNextQuestion());
     }
 
-    private void highlightCorrectButton() {
+    private void highlightCorrectAnswer() {
         for (int i = 0; i < containerInput.getChildCount(); i++) {
             View child = containerInput.getChildAt(i);
 
@@ -506,7 +395,7 @@ public class Game_activity extends AppCompatActivity {
         }
     }
 
-    private void disableAllButtons() {
+    private void disableAnswerButtons() {
         for (int i = 0; i < containerInput.getChildCount(); i++) {
             View child = containerInput.getChildAt(i);
 
@@ -517,7 +406,23 @@ public class Game_activity extends AppCompatActivity {
     }
 
     // ------------------------------------------------------------
-    // ПЕРЕХОД К СЛЕДУЮЩЕМУ ВОПРОСУ
+    // PRACTICE
+    // ------------------------------------------------------------
+
+    private void showPracticeGame() {
+        tvQuestionText.setText(
+                currentQuestion.getQuestionText()
+                        + "\n\nПравильный ответ:\n"
+                        + currentQuestion.getCorrectAnswer()
+        );
+
+        btnCheck.setVisibility(View.VISIBLE);
+        btnCheck.setText("Дальше");
+        btnCheck.setOnClickListener(v -> goToNextQuestion());
+    }
+
+    // ------------------------------------------------------------
+    // Переходы
     // ------------------------------------------------------------
 
     private void goToNextQuestion() {
@@ -550,11 +455,22 @@ public class Game_activity extends AppCompatActivity {
     }
 
     // ------------------------------------------------------------
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+    // Вспомогательные методы
     // ------------------------------------------------------------
 
     private boolean isEmpty(String text) {
         return text == null || text.trim().isEmpty();
+    }
+
+    private String cleanWord(String word) {
+        if (word == null) {
+            return "";
+        }
+
+        return word
+                .replaceAll("^[^\\p{L}\\p{N}]+", "")
+                .replaceAll("[^\\p{L}\\p{N}]+$", "")
+                .trim();
     }
 
     private String normalize(String text) {
@@ -568,5 +484,44 @@ public class Game_activity extends AppCompatActivity {
                 .replaceAll("[\\p{Punct}]", "")
                 .replaceAll("\\s+", " ")
                 .trim();
+    }
+
+    private boolean isStopWord(String word) {
+        String normalized = normalize(word);
+
+        return normalized.equals("это")
+                || normalized.equals("как")
+                || normalized.equals("для")
+                || normalized.equals("или")
+                || normalized.equals("при")
+                || normalized.equals("над")
+                || normalized.equals("под")
+                || normalized.equals("что")
+                || normalized.equals("где")
+                || normalized.equals("она")
+                || normalized.equals("оно")
+                || normalized.equals("они")
+                || normalized.equals("его")
+                || normalized.equals("ее")
+                || normalized.equals("её")
+                || normalized.equals("из")
+                || normalized.equals("на")
+                || normalized.equals("в")
+                || normalized.equals("и")
+                || normalized.equals("а")
+                || normalized.equals("к")
+                || normalized.equals("с")
+                || normalized.equals("по")
+                || normalized.equals("от");
+    }
+
+    private static class MaskedAnswer {
+        private final String textWithGap;
+        private final String hiddenWord;
+
+        private MaskedAnswer(String textWithGap, String hiddenWord) {
+            this.textWithGap = textWithGap;
+            this.hiddenWord = hiddenWord;
+        }
     }
 }

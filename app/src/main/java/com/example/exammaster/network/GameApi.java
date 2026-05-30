@@ -1,5 +1,6 @@
 package com.example.exammaster.network;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -22,8 +23,16 @@ public class GameApi {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final OfflineCacheManager cacheManager;
 
-    public void getQuestionsBySubject(long subjectId, String token, GameQuestionsCallback callback) {
+    public GameApi(Context context) {
+        this.cacheManager = new OfflineCacheManager(context);
+    }
+
+    public void getQuestionsBySubject(long subjectId,
+                                      String token,
+                                      GameQuestionsCallback callback) {
+
         executor.execute(() -> {
             try {
                 String response = getJson(
@@ -31,11 +40,38 @@ public class GameApi {
                         token
                 );
 
+                cacheManager.saveTicketsJson(subjectId, response);
+
                 List<GameQuestion> questions = parseQuestionsFromTickets(response);
 
                 mainHandler.post(() -> callback.onSuccess(questions));
-            } catch (Exception e) {
-                mainHandler.post(() -> callback.onError(e.getMessage()));
+
+            } catch (Exception serverError) {
+                String errorMessage = serverError.getMessage();
+
+                if (isUnauthorized(errorMessage)) {
+                    mainHandler.post(() -> callback.onError(errorMessage));
+                    return;
+                }
+
+                String cachedJson = cacheManager.getTicketsJson(subjectId);
+
+                if (cachedJson != null && !cachedJson.trim().isEmpty()) {
+                    try {
+                        List<GameQuestion> cachedQuestions = parseQuestionsFromTickets(cachedJson);
+
+                        mainHandler.post(() -> callback.onSuccess(cachedQuestions));
+
+                    } catch (Exception cacheError) {
+                        mainHandler.post(() -> callback.onError(
+                                "Ошибка чтения кэша вопросов: " + cacheError.getMessage()
+                        ));
+                    }
+                } else {
+                    mainHandler.post(() -> callback.onError(
+                            "Нет интернета и нет сохранённых вопросов"
+                    ));
+                }
             }
         });
     }
@@ -88,8 +124,8 @@ public class GameApi {
             connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(7000);
+            connection.setReadTimeout(7000);
             connection.setRequestProperty("Accept", "application/json");
 
             if (bearerToken != null && !bearerToken.trim().isEmpty()) {
@@ -98,7 +134,7 @@ public class GameApi {
 
             int code = connection.getResponseCode();
 
-            InputStream stream = (code >= 200 && code < 300)
+            InputStream stream = code >= 200 && code < 300
                     ? connection.getInputStream()
                     : connection.getErrorStream();
 
@@ -109,6 +145,7 @@ public class GameApi {
             }
 
             return response;
+
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -134,5 +171,16 @@ public class GameApi {
         }
 
         return builder.toString();
+    }
+
+    private boolean isUnauthorized(String errorMessage) {
+        if (errorMessage == null) {
+            return false;
+        }
+
+        return errorMessage.contains("HTTP 401")
+                || errorMessage.contains("Unauthorized")
+                || errorMessage.contains("Invalid JWT token")
+                || errorMessage.contains("User from token not found");
     }
 }

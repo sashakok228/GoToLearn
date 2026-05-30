@@ -53,7 +53,7 @@ public class Home_page_activity extends AppCompatActivity {
         rvHomeDisciplines = findViewById(R.id.rvHomeDisciplines);
 
         sessionManager = new SessionManager(this);
-        subjectApi = new SubjectApi();
+        subjectApi = new SubjectApi(this);
 
         setupRecyclerView();
         loadUserData();
@@ -144,10 +144,10 @@ public class Home_page_activity extends AppCompatActivity {
 
             @Override
             public void onError(String errorMessage) {
-                Log.e(TAG, "Ошибка загрузки дисциплин: " + errorMessage);
-
-                subjects.clear();
-                adapter.notifyDataSetChanged();
+                if (AuthRedirector.isUnauthorizedError(errorMessage)) {
+                    AuthRedirector.logoutToSignIn(Home_page_activity.this);
+                    return;
+                }
 
                 Toast.makeText(
                         Home_page_activity.this,

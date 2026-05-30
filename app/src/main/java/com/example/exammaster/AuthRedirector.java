@@ -15,9 +15,9 @@ public class AuthRedirector {
 
         return errorMessage.contains("HTTP 401")
                 || errorMessage.contains("Unauthorized")
-                || errorMessage.contains("User from token not found")
+                || errorMessage.contains("Invalid JWT token")
                 || errorMessage.contains("JWT token")
-                || errorMessage.contains("Invalid JWT token");
+                || errorMessage.contains("User from token not found");
     }
 
     public static void logoutToSignIn(Activity activity) {
