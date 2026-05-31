@@ -38,7 +38,7 @@
         <activity android:name=".Prepare_training_activity"/>
         <activity android:name=".Profile_activity"/>
         <activity android:name=".Questions_activity"/>
-
+        <activity android:name=".Edit_question_activity" />
     </application>
 
 </manifest>

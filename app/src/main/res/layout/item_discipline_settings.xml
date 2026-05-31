@@ -3,80 +3,70 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:layout_marginBottom="20dp"
-    android:background="@drawable/streak_box"
-    android:padding="8dp">
+    android:layout_height="110dp"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginBottom="14dp"
+    android:background="@drawable/avatar_box"
+    android:padding="12dp">
 
-    <!-- Иконка дисциплины слева -->
     <ImageView
-        android:id="@+id/ivIcon"
-        android:layout_width="95dp"
-        android:layout_height="95dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_negotovlogo"
+        android:id="@+id/ivDisciplineAvatar"
+        android:layout_width="82dp"
+        android:layout_height="82dp"
+        android:background="@drawable/rounded_input"
+        android:contentDescription="Фото дисциплины"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_ticket"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Название дисциплины -->
     <TextView
         android:id="@+id/tvSubjectTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="60dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="12dp"
         android:ellipsize="end"
-        android:maxLines="1"
         android:fontFamily="@font/ubuntu_regular"
-        android:text="Физика"
+        android:maxLines="1"
+        android:text="Математика"
         android:textColor="@color/texticons"
-        android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/ivIcon"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@id/tvQuestionCount"
         app:layout_constraintEnd_toStartOf="@id/btnPlay"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/ivDisciplineAvatar"
+        app:layout_constraintTop_toTopOf="@id/ivDisciplineAvatar"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-    <!-- Текст прогресса -->
     <TextView
-        android:id="@+id/tvProgressRatio"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvQuestionCount"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
         android:layout_marginTop="6dp"
-        android:fontFamily="@font/ubuntu_bold"
-        android:text="10/30"
+        android:layout_marginEnd="12dp"
+        android:fontFamily="@font/ubuntu_regular"
+        android:text="0 вопросов"
         android:textColor="@color/texticons"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/ivDisciplineAvatar"
+        app:layout_constraintEnd_toStartOf="@id/btnPlay"
+        app:layout_constraintStart_toEndOf="@id/ivDisciplineAvatar"
         app:layout_constraintTop_toBottomOf="@id/tvSubjectTitle" />
 
-    <!-- Кнопка справа: шестерёнка -->
     <ImageButton
         android:id="@+id/btnPlay"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:background="@drawable/rounded_input"
+        android:contentDescription="Настройки дисциплины"
+        android:padding="10dp"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_settings"
-        android:contentDescription="Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <!-- Полоска прогресса -->
-    <ProgressBar
-        android:id="@+id/pbProgress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="12dp"
-        android:layout_marginEnd="45dp"
-        android:layout_marginBottom="8dp"
-        android:max="100"
-        android:progress="30"
-        android:progressDrawable="@drawable/custom_progress_bar"
-        app:layout_constraintStart_toStartOf="@id/tvSubjectTitle"
-        app:layout_constraintEnd_toStartOf="@id/btnPlay"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

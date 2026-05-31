@@ -2,17 +2,19 @@ package com.example.exammaster.network;
 
 public class CreateQuestionRequest {
 
-    private final int questionNumber;
+    private final Integer questionNumber;
     private final String questionText;
     private final String correctAnswer;
 
-    public CreateQuestionRequest(int questionNumber, String questionText, String correctAnswer) {
+    public CreateQuestionRequest(Integer questionNumber,
+                                 String questionText,
+                                 String correctAnswer) {
         this.questionNumber = questionNumber;
         this.questionText = questionText;
         this.correctAnswer = correctAnswer;
     }
 
-    public int getQuestionNumber() {
+    public Integer getQuestionNumber() {
         return questionNumber;
     }
 

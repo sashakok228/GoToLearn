@@ -3,12 +3,11 @@ package com.example.exammaster;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.exammaster.network.ServerImageLoader;
 import com.example.exammaster.network.SessionManager;
 import com.example.exammaster.network.SubjectApi;
 import com.example.exammaster.network.SubjectListCallback;
@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Home_page_activity extends AppCompatActivity {
-
-    private static final String TAG = "Home_page_activity";
 
     private TextView tvGreeting;
     private TextView tvStreakText;
@@ -39,8 +37,6 @@ public class Home_page_activity extends AppCompatActivity {
     private HomeDisciplineAdapter adapter;
 
     private final List<SubjectResponse> subjects = new ArrayList<>();
-
-    private boolean firstLoadDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +59,7 @@ public class Home_page_activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        /*
-         * Загружаем именно здесь, чтобы после создания дисциплины
-         * список автоматически обновлялся при возврате на Home.
-         */
         loadSubjectsFromServer();
-        firstLoadDone = true;
     }
 
     private void setupRecyclerView() {
@@ -78,9 +68,7 @@ public class Home_page_activity extends AppCompatActivity {
 
             intent.putExtra("subjectId", subject.getId());
             intent.putExtra("subjectName", subject.getName());
-
-            // Пока ставим режим теста.
-            // Если захочешь режим определений, можно заменить на "Definition".
+            intent.putExtra("subjectImageUrl", subject.getImageUrl());
             intent.putExtra("MODE", "Test");
 
             startActivity(intent);
@@ -105,9 +93,17 @@ public class Home_page_activity extends AppCompatActivity {
 
         int streak = sharedPref.getInt("userStreak", 8);
 
-        tvGreeting.setText("Hi, " + name + "!");
-        tvStreakText.setText(streak + " Дней стрик");
-        tvStreakNumber.setText(String.valueOf(streak));
+        if (tvGreeting != null) {
+            tvGreeting.setText("Hi, " + name + "!");
+        }
+
+        if (tvStreakText != null) {
+            tvStreakText.setText(streak + " Дней стрик");
+        }
+
+        if (tvStreakNumber != null) {
+            tvStreakNumber.setText(String.valueOf(streak));
+        }
     }
 
     private void loadSubjectsFromServer() {
@@ -115,7 +111,10 @@ public class Home_page_activity extends AppCompatActivity {
 
         if (isBadToken(token)) {
             subjects.clear();
-            adapter.notifyDataSetChanged();
+
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
 
             Toast.makeText(
                     this,
@@ -136,10 +135,6 @@ public class Home_page_activity extends AppCompatActivity {
                 }
 
                 adapter.notifyDataSetChanged();
-
-                Log.d(TAG, "Loaded subjects count: " + subjects.size());
-
-
             }
 
             @Override
@@ -199,14 +194,16 @@ public class Home_page_activity extends AppCompatActivity {
         private final List<SubjectResponse> items;
         private final OnSubjectClickListener listener;
 
-        public HomeDisciplineAdapter(List<SubjectResponse> items, OnSubjectClickListener listener) {
+        public HomeDisciplineAdapter(List<SubjectResponse> items,
+                                     OnSubjectClickListener listener) {
             this.items = items;
             this.listener = listener;
         }
 
         @NonNull
         @Override
-        public HomeDisciplineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public HomeDisciplineViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                           int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_home_discipline, parent, false);
 
@@ -214,7 +211,8 @@ public class Home_page_activity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull HomeDisciplineViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull HomeDisciplineViewHolder holder,
+                                     int position) {
             SubjectResponse subject = items.get(position);
             holder.bind(subject, listener);
         }
@@ -226,21 +224,22 @@ public class Home_page_activity extends AppCompatActivity {
 
         static class HomeDisciplineViewHolder extends RecyclerView.ViewHolder {
 
+            private final ImageView ivDisciplineAvatar;
             private final TextView tvSubjectTitle;
-            private final TextView tvProgressRatio;
-            private final ProgressBar pbProgress;
+            private final TextView tvQuestionCount;
             private final ImageButton btnPlay;
 
             public HomeDisciplineViewHolder(@NonNull View itemView) {
                 super(itemView);
 
+                ivDisciplineAvatar = itemView.findViewById(R.id.ivDisciplineAvatar);
                 tvSubjectTitle = itemView.findViewById(R.id.tvSubjectTitle);
-                tvProgressRatio = itemView.findViewById(R.id.tvProgressRatio);
-                pbProgress = itemView.findViewById(R.id.pbProgress);
+                tvQuestionCount = itemView.findViewById(R.id.tvQuestionCount);
                 btnPlay = itemView.findViewById(R.id.btnPlay);
             }
 
-            public void bind(SubjectResponse subject, OnSubjectClickListener listener) {
+            public void bind(SubjectResponse subject,
+                             OnSubjectClickListener listener) {
                 String subjectName = subject.getName();
 
                 if (subjectName == null || subjectName.trim().isEmpty()) {
@@ -248,17 +247,35 @@ public class Home_page_activity extends AppCompatActivity {
                 }
 
                 tvSubjectTitle.setText(subjectName);
+                tvQuestionCount.setText(formatQuestionCount(subject.getQuestionCount()));
 
-                /*
-                 * Пока сервер не отдаёт прогресс, поэтому ставим заглушку.
-                 * Список дисциплин от этого выводиться должен.
-                 */
-                tvProgressRatio.setText("0/0");
-                pbProgress.setMax(100);
-                pbProgress.setProgress(0);
+                ServerImageLoader.load(
+                        ivDisciplineAvatar,
+                        subject.getImageUrl(),
+                        R.drawable.ic_ticket
+                );
 
                 btnPlay.setOnClickListener(v -> listener.onSubjectClick(subject));
                 itemView.setOnClickListener(v -> listener.onSubjectClick(subject));
+            }
+
+            private String formatQuestionCount(int count) {
+                int lastTwo = count % 100;
+                int last = count % 10;
+
+                if (lastTwo >= 11 && lastTwo <= 14) {
+                    return count + " вопросов";
+                }
+
+                if (last == 1) {
+                    return count + " вопрос";
+                }
+
+                if (last >= 2 && last <= 4) {
+                    return count + " вопроса";
+                }
+
+                return count + " вопросов";
             }
         }
     }
