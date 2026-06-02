@@ -5,16 +5,18 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
-    private static final String PREFS_NAME = "auth_prefs";
-    private static final String KEY_TOKEN = "jwt_token";
+    private static final String PREF_NAME = "auth_session";
+
+    private static final String KEY_TOKEN = "token";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_AVATAR_URL = "avatar_url";
 
     private final SharedPreferences prefs;
 
     public SessionManager(Context context) {
-        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public void saveAuth(AuthResponse response) {
@@ -28,33 +30,48 @@ public class SessionManager {
                 .putLong(KEY_USER_ID, response.getUserId())
                 .putString(KEY_USERNAME, response.getUsername())
                 .putString(KEY_EMAIL, response.getEmail())
+                .putString(KEY_AVATAR_URL, "")
+                .apply();
+    }
+
+    public void saveProfile(UserProfileResponse profile) {
+        if (profile == null) {
+            return;
+        }
+
+        prefs.edit()
+                .putLong(KEY_USER_ID, profile.getUserId())
+                .putString(KEY_USERNAME, profile.getUsername())
+                .putString(KEY_EMAIL, profile.getEmail())
+                .putString(KEY_AVATAR_URL, profile.getAvatarUrl())
+                .apply();
+    }
+
+    public void saveAvatarUrl(String avatarUrl) {
+        prefs.edit()
+                .putString(KEY_AVATAR_URL, avatarUrl == null ? "" : avatarUrl)
                 .apply();
     }
 
     public String getToken() {
         String token = prefs.getString(KEY_TOKEN, null);
-
-        if (token == null || token.trim().isEmpty() || token.equalsIgnoreCase("null")) {
-            return null;
-        }
-
-        return token;
+        return isValidToken(token) ? token : null;
     }
-    private boolean isValidToken(String token) {
-        return token != null
-                && !token.trim().isEmpty()
-                && !"null".equalsIgnoreCase(token.trim());
-    }
+
     public long getUserId() {
         return prefs.getLong(KEY_USER_ID, -1);
     }
 
     public String getUsername() {
-        return prefs.getString(KEY_USERNAME, null);
+        return prefs.getString(KEY_USERNAME, "");
     }
 
     public String getEmail() {
-        return prefs.getString(KEY_EMAIL, null);
+        return prefs.getString(KEY_EMAIL, "");
+    }
+
+    public String getAvatarUrl() {
+        return prefs.getString(KEY_AVATAR_URL, "");
     }
 
     public boolean isLoggedIn() {
@@ -63,5 +80,11 @@ public class SessionManager {
 
     public void clear() {
         prefs.edit().clear().apply();
+    }
+
+    private boolean isValidToken(String token) {
+        return token != null
+                && !token.trim().isEmpty()
+                && !"null".equalsIgnoreCase(token.trim());
     }
 }

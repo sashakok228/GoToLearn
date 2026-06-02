@@ -1,52 +1,100 @@
 package com.example.exammaster;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.exammaster.network.PasswordRecoveryApi;
+import com.example.exammaster.network.SimpleCallback;
 
 public class ForgotPassword_activity extends AppCompatActivity {
 
     private EditText etEmail;
-    private Button btnChangePassword;
+    private View btnSendPassword;
+    private View tvBackToLogin;
 
-    @SuppressLint("MissingInflatedId")
+    private PasswordRecoveryApi passwordRecoveryApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Проверь, чтобы название XML-файла совпадало с твоим
         setContentView(R.layout.forgotpassword_activity);
 
-        // 1. Инициализация элементов
         etEmail = findViewById(R.id.etEmail);
-        btnChangePassword = findViewById(R.id.btnChangePassword);
+        btnSendPassword = findViewById(R.id.btnSendPassword);
+        tvBackToLogin = findViewById(R.id.tvBackToLogin);
 
-        // 2. Логика кнопки
-        btnChangePassword.setOnClickListener(new View.OnClickListener() {
+        passwordRecoveryApi = new PasswordRecoveryApi();
+
+        setupButtons();
+    }
+
+    private void setupButtons() {
+        if (btnSendPassword != null) {
+            btnSendPassword.setOnClickListener(v -> sendNewPassword());
+        }
+
+        if (tvBackToLogin != null) {
+            tvBackToLogin.setOnClickListener(v -> {
+                Intent intent = new Intent(ForgotPassword_activity.this, SignIn_activity.class);
+                startActivity(intent);
+                finish();
+            });
+        }
+    }
+
+    private void sendNewPassword() {
+        String email = etEmail.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            etEmail.setError("Введите почту");
+            etEmail.requestFocus();
+            return;
+        }
+
+        if (!email.contains("@")) {
+            etEmail.setError("Некорректная почта");
+            etEmail.requestFocus();
+            return;
+        }
+
+        btnSendPassword.setEnabled(false);
+
+        Toast.makeText(
+                this,
+                "Отправляем новый пароль...",
+                Toast.LENGTH_SHORT
+        ).show();
+
+        passwordRecoveryApi.sendNewPassword(email, new SimpleCallback() {
             @Override
-            public void onClick(View v) {
-                String email = etEmail.getText().toString().trim();
+            public void onSuccess(String message) {
+                btnSendPassword.setEnabled(true);
 
-                if (email.isEmpty()) {
-                    // Если поле пустое
-                    etEmail.setError("Введите ваш Email");
-                    Toast.makeText(ForgotPassword_activity.this, "Пожалуйста, введите почту", Toast.LENGTH_SHORT).show();
-                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    // Если введен не Email (нет собачки или точки)
-                    etEmail.setError("Введите корректный Email");
-                } else {
-                    // Если всё введено верно
-                    Toast.makeText(ForgotPassword_activity.this, "Код отправлен на " + email, Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        ForgotPassword_activity.this,
+                        message,
+                        Toast.LENGTH_LONG
+                ).show();
 
-                    // ПЕРЕХОД на следующий экран (где 4 ячейки кода)
-                    // Убедись, что файл называется именно confirmpassword_activity
-                    Intent intent = new Intent(ForgotPassword_activity.this, ConfirmPassword_activity.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(ForgotPassword_activity.this, SignIn_activity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                btnSendPassword.setEnabled(true);
+
+                Toast.makeText(
+                        ForgotPassword_activity.this,
+                        "Ошибка восстановления пароля: " + errorMessage,
+                        Toast.LENGTH_LONG
+                ).show();
             }
         });
     }

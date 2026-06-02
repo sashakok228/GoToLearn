@@ -62,6 +62,7 @@ public class Game_activity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         gameApi = new GameApi(this);
+
         readIntentData();
         loadQuestionsFromServer();
     }
@@ -167,10 +168,6 @@ public class Game_activity extends AppCompatActivity {
         if ("Easy".equalsIgnoreCase(difficulty)) {
             showMissingWordGame();
         } else if ("Normal".equalsIgnoreCase(difficulty)) {
-            /*
-             * На нормальной сложности иногда пропуск слова,
-             * иногда выбор правильного ответа.
-             */
             boolean useMissingWord = random.nextBoolean();
 
             if (useMissingWord) {
@@ -187,10 +184,6 @@ public class Game_activity extends AppCompatActivity {
         }
     }
 
-    // ------------------------------------------------------------
-    // EASY / NORMAL: пропущенное слово в правильном ответе
-    // ------------------------------------------------------------
-
     private void showMissingWordGame() {
         String correctAnswer = currentQuestion.getCorrectAnswer();
 
@@ -200,15 +193,15 @@ public class Game_activity extends AppCompatActivity {
             return;
         }
 
+        if (correctAnswer.trim().split("\\s+").length < 3) {
+            showChoiceGame();
+            return;
+        }
+
         MaskedAnswer maskedAnswer = makeMaskedAnswer(correctAnswer);
 
         hiddenWord = maskedAnswer.hiddenWord;
 
-        /*
-         * ВАЖНО:
-         * Здесь больше НЕ выводим сам вопрос.
-         * Показываем только правильный ответ с пропуском.
-         */
         tvQuestionText.setText(
                 "Заполни пропуск в правильном ответе:\n\n" +
                         maskedAnswer.textWithGap
@@ -219,7 +212,7 @@ public class Game_activity extends AppCompatActivity {
         answerInput.setSingleLine(true);
         answerInput.setGravity(Gravity.CENTER);
         answerInput.setBackgroundResource(R.drawable.rounded_input);
-        answerInput.setPadding(40, 30, 40, 30);
+        answerInput.setPadding(dp(20), dp(12), dp(20), dp(12));
         answerInput.setTextColor(Color.BLACK);
         answerInput.setHintTextColor(Color.GRAY);
 
@@ -228,7 +221,7 @@ public class Game_activity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        inputParams.setMargins(0, 0, 0, 40);
+        inputParams.setMargins(0, 0, 0, dp(24));
         answerInput.setLayoutParams(inputParams);
 
         containerInput.addView(answerInput);
@@ -306,10 +299,6 @@ public class Game_activity extends AppCompatActivity {
         btnCheck.setOnClickListener(v -> goToNextQuestion());
     }
 
-    // ------------------------------------------------------------
-    // NORMAL / HARD: выбор правильного варианта ответа
-    // ------------------------------------------------------------
-
     private void showChoiceGame() {
         tvQuestionText.setText(currentQuestion.getQuestionText());
 
@@ -343,14 +332,38 @@ public class Game_activity extends AppCompatActivity {
 
         btn.setText(answerText);
         btn.setAllCaps(false);
+
+        /*
+         * Главное исправление:
+         * разрешаем кнопке переносить длинный текст на несколько строк.
+         */
+        btn.setSingleLine(false);
+        btn.setMaxLines(10);
+        btn.setGravity(Gravity.CENTER);
+        btn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        btn.setIncludeFontPadding(true);
+
+        btn.setTextSize(15);
+        btn.setTextColor(Color.BLACK);
+
         btn.setBackgroundResource(R.drawable.rounded_input);
 
+        /*
+         * Главное исправление:
+         * высота больше НЕ фиксированная.
+         * Теперь кнопка расширяется вниз, если текст длинный.
+         */
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                150
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        params.setMargins(0, 0, 0, 30);
+        params.setMargins(0, 0, 0, dp(14));
+
+        btn.setMinHeight(dp(55));
+        btn.setMinimumHeight(dp(55));
+        btn.setPadding(dp(14), dp(10), dp(14), dp(10));
+
         btn.setLayoutParams(params);
 
         btn.setOnClickListener(v -> checkChoiceAnswer(btn, answerText));
@@ -405,10 +418,6 @@ public class Game_activity extends AppCompatActivity {
         }
     }
 
-    // ------------------------------------------------------------
-    // PRACTICE
-    // ------------------------------------------------------------
-
     private void showPracticeGame() {
         tvQuestionText.setText(
                 currentQuestion.getQuestionText()
@@ -420,10 +429,6 @@ public class Game_activity extends AppCompatActivity {
         btnCheck.setText("Дальше");
         btnCheck.setOnClickListener(v -> goToNextQuestion());
     }
-
-    // ------------------------------------------------------------
-    // Переходы
-    // ------------------------------------------------------------
 
     private void goToNextQuestion() {
         currentQuestionIndex++;
@@ -453,10 +458,6 @@ public class Game_activity extends AppCompatActivity {
         btnCheck.setText("Завершить");
         btnCheck.setOnClickListener(v -> finish());
     }
-
-    // ------------------------------------------------------------
-    // Вспомогательные методы
-    // ------------------------------------------------------------
 
     private boolean isEmpty(String text) {
         return text == null || text.trim().isEmpty();
@@ -510,9 +511,14 @@ public class Game_activity extends AppCompatActivity {
                 || normalized.equals("и")
                 || normalized.equals("а")
                 || normalized.equals("к")
-                || normalized.equals("с")
+                || normalized.equals("с"
+        )
                 || normalized.equals("по")
                 || normalized.equals("от");
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density);
     }
 
     private static class MaskedAnswer {

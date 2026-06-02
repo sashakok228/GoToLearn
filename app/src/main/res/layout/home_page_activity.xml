@@ -34,15 +34,19 @@
 
         <TextView
             android:id="@+id/tvGreeting"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:paddingBottom="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="24dp"
+            android:ellipsize="end"
             android:fontFamily="@font/ubuntu_regular"
-            android:text="Hi, Alex!"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Привет, User!"
             android:textColor="@color/texticons"
-            android:textSize="40sp"
+            android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivAvatar"
             app:layout_constraintTop_toTopOf="@id/ivAvatar" />
 
