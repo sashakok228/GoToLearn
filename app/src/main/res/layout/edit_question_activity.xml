@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:fontFamily="@font/ubuntu_regular"
-            android:text="Edit"
+            android:text="Изменение "
             android:textColor="@color/texticons"
             android:textSize="38sp"
             app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
