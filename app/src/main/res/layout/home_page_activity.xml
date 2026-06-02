@@ -64,27 +64,32 @@
 
             <TextView
                 android:id="@+id/tvCongrats"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 android:fontFamily="@font/ubuntu_bold"
-                android:text="Congratulations!"
+                android:text="Учебный стрик"
                 android:textColor="@color/texticons"
                 android:textSize="25sp"
+                app:layout_constraintEnd_toStartOf="@id/medalContainer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvStreakText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 android:fontFamily="@font/ubuntu_bold"
-                android:text="8 Дней стрик"
+                android:text="0 дней подряд"
                 android:textColor="@color/texticons"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/medalContainer"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <FrameLayout
+                android:id="@+id/medalContainer"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -103,11 +108,13 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/ubuntu_regular"
-                    android:text="8"
+                    android:text="0"
                     android:textColor="@color/texticons"
                     android:textSize="30sp" />
             </FrameLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -154,6 +161,7 @@
                 android:layout_height="45dp"
                 android:src="@drawable/ic_home"
                 app:tint="@color/texticons" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -170,6 +178,7 @@
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@drawable/ic_avaterbook" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -187,6 +196,7 @@
                 android:layout_height="45dp"
                 android:src="@drawable/ic_book"
                 app:tint="@color/texticons" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

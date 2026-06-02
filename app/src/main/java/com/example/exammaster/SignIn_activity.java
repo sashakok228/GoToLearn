@@ -64,7 +64,7 @@ public class SignIn_activity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Введите почту и пароль", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -80,7 +80,7 @@ public class SignIn_activity extends AppCompatActivity {
                 sessionManager.saveAuth(response);
 
                 Toast.makeText(SignIn_activity.this,
-                        "Login successful!",
+                        "Вход выполнен",
                         Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(SignIn_activity.this, Home_page_activity.class);
@@ -93,14 +93,14 @@ public class SignIn_activity extends AppCompatActivity {
                 btnSignIn.setEnabled(true);
 
                 Toast.makeText(SignIn_activity.this,
-                        "Login error: " + errorMessage,
+                        "Ошибка входа: " + errorMessage,
                         Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void setupRegisterLink() {
-        String text = "Don’t have an account? Register";
+        String text = "Нет аккаунта? Зарегистрироваться";
         SpannableString ss = new SpannableString(text);
 
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -119,7 +119,7 @@ public class SignIn_activity extends AppCompatActivity {
             }
         };
 
-        ss.setSpan(clickableSpan, 23, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan, 14, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvRegisterLink.setText(ss);
         tvRegisterLink.setMovementMethod(LinkMovementMethod.getInstance());

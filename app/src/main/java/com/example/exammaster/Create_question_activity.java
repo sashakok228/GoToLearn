@@ -410,7 +410,7 @@ public class Create_question_activity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 btnCreate.setEnabled(true);
-                btnCreate.setText("Create question");
+                btnCreate.setText("Создать вопрос");
 
                 Toast.makeText(
                         Create_question_activity.this,
@@ -425,7 +425,7 @@ public class Create_question_activity extends AppCompatActivity {
             @Override
             public void onError(String errorMessage) {
                 btnCreate.setEnabled(true);
-                btnCreate.setText("Create question");
+                btnCreate.setText("Создать вопрос");
 
                 Toast.makeText(
                         Create_question_activity.this,

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/fonzakryglen">
 
-    <!-- Верхняя часть с волной -->
     <View
         android:id="@+id/headerBackground"
         android:layout_width="match_parent"
@@ -28,20 +27,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4" />
 
-    <!-- Заголовок Sign In -->
     <TextView
         android:id="@+id/tvSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginStart="36dp"
-        android:text="Sign In"
+        android:text="Вход"
         android:textColor="@color/texticons"
         android:textSize="40sp"
         android:fontFamily="@font/ubuntu_regular"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerBackground"
-        />
+        app:layout_constraintTop_toBottomOf="@id/headerBackground" />
 
     <EditText
         android:id="@+id/etEmail"
@@ -54,7 +51,7 @@
         android:background="@drawable/rounded_input"
         android:drawableStart="@drawable/ic_email"
         android:drawablePadding="10dp"
-        android:hint="Email adress"
+        android:hint="Почта"
         android:inputType="textEmailAddress"
         android:paddingLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -62,7 +59,6 @@
         app:layout_constraintTop_toBottomOf="@id/tvSignIn"
         android:fontFamily="@font/ubuntu_regular"/>
 
-    <!-- Поле Пароль -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
@@ -74,7 +70,7 @@
         android:background="@drawable/rounded_input"
         android:drawableStart="@drawable/ic_lock"
         android:drawablePadding="10dp"
-        android:hint="Password"
+        android:hint="Пароль"
         android:inputType="textPassword"
         android:paddingLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -82,20 +78,18 @@
         app:layout_constraintTop_toBottomOf="@id/etEmail"
         android:fontFamily="@font/ubuntu_regular"/>
 
-    <!-- Ссылка Forgot password? -->
     <TextView
         android:id="@+id/tvForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Forgot password?"
+        android:text="Забыли пароль?"
         android:textColor="@color/vidilenievsego"
         android:textSize="14sp"
         android:fontFamily="@font/ubuntu_bold"
         app:layout_constraintEnd_toEndOf="@id/etPassword"
         app:layout_constraintTop_toBottomOf="@id/etPassword" />
 
-    <!-- Кнопка Sign In -->
     <Button
         android:id="@+id/btnSignIn"
         android:insetTop="0dp"
@@ -107,7 +101,7 @@
         android:layout_marginTop="180dp"
         android:textSize="24sp"
         android:backgroundTint="@color/knopki"
-        android:text="Sing In"
+        android:text="Войти"
         android:textAllCaps="false"
         android:textColor="@color/texticons"
         app:cornerRadius="30dp"
@@ -116,7 +110,6 @@
         app:layout_constraintTop_toBottomOf="@id/etPassword"
         android:fontFamily="@font/ubuntu_regular"/>
 
-    <!-- Нижняя ссылка -->
     <TextView
         android:id="@+id/tvRegisterLink"
         android:layout_width="wrap_content"
@@ -124,7 +117,7 @@
         android:layout_marginBottom="32dp"
         android:layout_marginStart="40dp"
         android:textSize="18sp"
-        android:text="Don't have an account? Register"
+        android:text="Нет аккаунта? Зарегистрироваться"
         android:textColor="@color/texticons"
         android:fontFamily="@font/ubuntu_regular"
         app:layout_constraintBottom_toBottomOf="parent"

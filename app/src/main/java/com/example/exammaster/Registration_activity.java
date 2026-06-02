@@ -62,13 +62,13 @@ public class Registration_activity extends AppCompatActivity {
         String confirmPass = etConfirmPassword.getText().toString().trim();
 
         if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || confirmPass.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!pass.equals(confirmPass)) {
-            etConfirmPassword.setError("Passwords do not match!");
-            Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+            etConfirmPassword.setError("Пароли не совпадают");
+            Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -82,11 +82,6 @@ public class Registration_activity extends AppCompatActivity {
             public void onSuccess(AuthResponse response) {
                 btnRegister.setEnabled(true);
 
-                /*
-                 * Сервер при регистрации возвращает token = null,
-                 * потому что пользователь ещё не подтвердил почту.
-                 * Поэтому НЕ сохраняем сессию и НЕ открываем Home_page_activity.
-                 */
                 sessionManager.clear();
 
                 Toast.makeText(
@@ -106,14 +101,14 @@ public class Registration_activity extends AppCompatActivity {
                 btnRegister.setEnabled(true);
 
                 Toast.makeText(Registration_activity.this,
-                        "Registration error: " + errorMessage,
+                        "Ошибка регистрации: " + errorMessage,
                         Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void setupLoginLink() {
-        String text = "Already Registered? Log In";
+        String text = "Уже есть аккаунт? Войти";
         SpannableString ss = new SpannableString(text);
 
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -133,7 +128,7 @@ public class Registration_activity extends AppCompatActivity {
             }
         };
 
-        ss.setSpan(clickableSpan, 20, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan, 18, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvLoginLink.setText(ss);
         tvLoginLink.setMovementMethod(LinkMovementMethod.getInstance());

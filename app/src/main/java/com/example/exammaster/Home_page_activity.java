@@ -1,7 +1,6 @@
 package com.example.exammaster;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +30,12 @@ import java.util.List;
 public class Home_page_activity extends AppCompatActivity {
 
     private ImageView ivProfileIcon;
+
     private TextView tvGreeting;
+    private TextView tvCongrats;
     private TextView tvStreakText;
     private TextView tvStreakNumber;
+
     private RecyclerView rvHomeDisciplines;
 
     private SessionManager sessionManager;
@@ -48,16 +50,13 @@ public class Home_page_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_activity);
 
-        /*
-         * ВАЖНО:
-         * В твоём home_page_activity.xml аватарка называется ivAvatar,
-         * поэтому здесь используем R.id.ivAvatar, а не R.id.ivProfileIcon.
-         */
         ivProfileIcon = findViewById(R.id.ivAvatar);
 
         tvGreeting = findViewById(R.id.tvGreeting);
+        tvCongrats = findViewById(R.id.tvCongrats);
         tvStreakText = findViewById(R.id.tvStreakText);
         tvStreakNumber = findViewById(R.id.tvStreakNumber);
+
         rvHomeDisciplines = findViewById(R.id.rvHomeDisciplines);
 
         sessionManager = new SessionManager(this);
@@ -66,6 +65,7 @@ public class Home_page_activity extends AppCompatActivity {
 
         setupRecyclerView();
         loadUserDataFromSession();
+        updateStreakViews();
         setupBottomNavigation();
     }
 
@@ -76,6 +76,7 @@ public class Home_page_activity extends AppCompatActivity {
         loadUserDataFromSession();
         loadUserDataFromServer();
         loadSubjectsFromServer();
+        updateStreakViews();
     }
 
     private void setupRecyclerView() {
@@ -104,11 +105,12 @@ public class Home_page_activity extends AppCompatActivity {
         }
 
         if (username == null || username.trim().isEmpty()) {
-            username = "User";
+            username = "Пользователь";
         }
 
         if (tvGreeting != null) {
-            tvGreeting.setText("Привет, " + shortenUsername(username) + "!");        }
+            tvGreeting.setText("Привет, " + shortenUsername(username) + "!");
+        }
 
         if (ivProfileIcon != null) {
             ServerImageLoader.load(
@@ -117,17 +119,41 @@ public class Home_page_activity extends AppCompatActivity {
                     R.drawable.ic_profile
             );
         }
+    }
 
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        int streak = sharedPref.getInt("userStreak", 8);
+    private void updateStreakViews() {
+        int streak = StreakManager.getCurrentStreak(this, sessionManager);
+
+        if (tvCongrats != null) {
+            tvCongrats.setText("Учебный стрик");
+        }
 
         if (tvStreakText != null) {
-            tvStreakText.setText(streak + " Дней стрик");
+            tvStreakText.setText(formatStreakText(streak));
         }
 
         if (tvStreakNumber != null) {
             tvStreakNumber.setText(String.valueOf(streak));
         }
+    }
+
+    private String formatStreakText(int streak) {
+        int lastTwo = streak % 100;
+        int last = streak % 10;
+
+        if (lastTwo >= 11 && lastTwo <= 14) {
+            return streak + " дней подряд";
+        }
+
+        if (last == 1) {
+            return streak + " день подряд";
+        }
+
+        if (last >= 2 && last <= 4) {
+            return streak + " дня подряд";
+        }
+
+        return streak + " дней подряд";
     }
 
     private void loadUserDataFromServer() {
@@ -142,6 +168,7 @@ public class Home_page_activity extends AppCompatActivity {
             public void onSuccess(UserProfileResponse profile) {
                 sessionManager.saveProfile(profile);
                 loadUserDataFromSession();
+                updateStreakViews();
             }
 
             @Override
@@ -166,6 +193,20 @@ public class Home_page_activity extends AppCompatActivity {
         }
 
         return cleanEmail;
+    }
+
+    private String shortenUsername(String username) {
+        if (username == null) {
+            return "Пользователь";
+        }
+
+        String cleanUsername = username.trim();
+
+        if (cleanUsername.length() <= 10) {
+            return cleanUsername;
+        }
+
+        return cleanUsername.substring(0, 10) + "...";
     }
 
     private void loadSubjectsFromServer() {
@@ -252,19 +293,7 @@ public class Home_page_activity extends AppCompatActivity {
     private interface OnSubjectClickListener {
         void onSubjectClick(SubjectResponse subject);
     }
-    private String shortenUsername(String username) {
-        if (username == null) {
-            return "User";
-        }
 
-        String cleanUsername = username.trim();
-
-        if (cleanUsername.length() <= 10) {
-            return cleanUsername;
-        }
-
-        return cleanUsername.substring(0, 10) + "...";
-    }
     private static class HomeDisciplineAdapter
             extends RecyclerView.Adapter<HomeDisciplineAdapter.HomeDisciplineViewHolder> {
 
@@ -355,6 +384,5 @@ public class Home_page_activity extends AppCompatActivity {
                 return count + " вопросов";
             }
         }
-
     }
 }

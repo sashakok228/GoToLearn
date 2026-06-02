@@ -109,7 +109,15 @@ public class Prepare_training_activity extends AppCompatActivity {
         newSelected.setSelected(true);
         selectedButton = newSelected;
 
-        selectedDifficulty = newSelected.getText().toString();
+        if (newSelected.getId() == R.id.btnEasy) {
+            selectedDifficulty = "Easy";
+        } else if (newSelected.getId() == R.id.btnNormal) {
+            selectedDifficulty = "Normal";
+        } else if (newSelected.getId() == R.id.btnHard) {
+            selectedDifficulty = "Hard";
+        } else if (newSelected.getId() == R.id.btnPractice) {
+            selectedDifficulty = "Practice";
+        }
     }
 
     private void setupNavigation() {

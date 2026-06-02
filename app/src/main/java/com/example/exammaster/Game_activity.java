@@ -277,6 +277,8 @@ public class Game_activity extends AppCompatActivity {
             return;
         }
 
+        markStudiedToday();
+
         boolean isCorrect = normalize(userAnswer).equals(normalize(hiddenWord));
 
         if (isCorrect) {
@@ -304,7 +306,9 @@ public class Game_activity extends AppCompatActivity {
 
         List<String> answers = new ArrayList<>();
 
-        answers.add(currentQuestion.getCorrectAnswer());
+        if (!isEmpty(currentQuestion.getCorrectAnswer())) {
+            answers.add(currentQuestion.getCorrectAnswer());
+        }
 
         if (!isEmpty(currentQuestion.getWrongAnswer1())) {
             answers.add(currentQuestion.getWrongAnswer1());
@@ -333,10 +337,6 @@ public class Game_activity extends AppCompatActivity {
         btn.setText(answerText);
         btn.setAllCaps(false);
 
-        /*
-         * Главное исправление:
-         * разрешаем кнопке переносить длинный текст на несколько строк.
-         */
         btn.setSingleLine(false);
         btn.setMaxLines(10);
         btn.setGravity(Gravity.CENTER);
@@ -345,14 +345,8 @@ public class Game_activity extends AppCompatActivity {
 
         btn.setTextSize(15);
         btn.setTextColor(Color.BLACK);
-
         btn.setBackgroundResource(R.drawable.rounded_input);
 
-        /*
-         * Главное исправление:
-         * высота больше НЕ фиксированная.
-         * Теперь кнопка расширяется вниз, если текст длинный.
-         */
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -372,6 +366,8 @@ public class Game_activity extends AppCompatActivity {
     }
 
     private void checkChoiceAnswer(Button selectedButton, String selectedAnswer) {
+        markStudiedToday();
+
         boolean isCorrect = normalize(selectedAnswer)
                 .equals(normalize(currentQuestion.getCorrectAnswer()));
 
@@ -390,6 +386,10 @@ public class Game_activity extends AppCompatActivity {
         btnCheck.setVisibility(View.VISIBLE);
         btnCheck.setText("Дальше");
         btnCheck.setOnClickListener(v -> goToNextQuestion());
+    }
+
+    private void markStudiedToday() {
+        StreakManager.recordStudyToday(this, sessionManager);
     }
 
     private void highlightCorrectAnswer() {
@@ -427,7 +427,10 @@ public class Game_activity extends AppCompatActivity {
 
         btnCheck.setVisibility(View.VISIBLE);
         btnCheck.setText("Дальше");
-        btnCheck.setOnClickListener(v -> goToNextQuestion());
+        btnCheck.setOnClickListener(v -> {
+            markStudiedToday();
+            goToNextQuestion();
+        });
     }
 
     private void goToNextQuestion() {
@@ -511,8 +514,7 @@ public class Game_activity extends AppCompatActivity {
                 || normalized.equals("и")
                 || normalized.equals("а")
                 || normalized.equals("к")
-                || normalized.equals("с"
-        )
+                || normalized.equals("с")
                 || normalized.equals("по")
                 || normalized.equals("от");
     }
